@@ -37,17 +37,17 @@ public class RecipeDetailActivity extends AppCompatActivity {
             return;
         }
 
-        Recipe recipe = (Recipe) startingIntent.getSerializableExtra(EXTRA_RECIPE);
+        Recipe recipe = startingIntent.getParcelableExtra(EXTRA_RECIPE);
+
+        toolbar.setTitle(recipe.getName());
 
         FragmentManager manager = getSupportFragmentManager();
 
         if (manager.findFragmentById(fragmentContainer.getId()) == null) {
-
             RecipeDetailFragment fragment = RecipeDetailFragment.newInstance(recipe);
-
             FragmentTransaction transaction = manager.beginTransaction();
             transaction.add(fragmentContainer.getId(), fragment, RecipeDetailFragment.TAG);
-
+            transaction.commit();
         }
     }
 }

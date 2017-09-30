@@ -6,6 +6,7 @@ import android.os.Parcelable;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by Shane on 9/29/2017.
@@ -104,5 +105,11 @@ public class Recipe implements Parcelable {
         parcel.writeString(imageUrl);
         parcel.writeTypedList(steps);
         parcel.writeTypedList(ingredients);
+    }
+
+    @Override
+    public String toString() {
+        return String.format(Locale.getDefault(),
+                "Recipe: { id: %d, name: %s, servings: %d}", id, name, servings);
     }
 }

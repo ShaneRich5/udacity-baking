@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,6 +31,7 @@ import timber.log.Timber;
  */
 
 public class RecipeListFragment extends Fragment {
+    public static final String TAG = RecipeListFragment.class.getName();
 
     @BindView(R.id.recycler_recipe) RecyclerView recipeRecyclerView;
 
@@ -66,10 +68,12 @@ public class RecipeListFragment extends Fragment {
                     @Override
                     public void onNext(@NonNull List<Recipe> recipes) {
                         recipeAdapter.setRecipes(recipes);
+                        Log.i(TAG, recipes.toString());
                     }
 
                     @Override
                     public void onError(@NonNull Throwable error) {
+                        Log.e(TAG, error.toString());
                         Timber.e(error);
                     }
 
