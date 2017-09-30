@@ -5,6 +5,7 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -20,8 +21,8 @@ public class Recipe implements Parcelable {
     @SerializedName("image")
     private String imageUrl;
 
-    private List<Step> steps;
-    private List<Ingredient> ingredients;
+    private List<Step> steps = new ArrayList<>();
+    private List<Ingredient> ingredients = new ArrayList<>();
 
     public int getId() {
         return id;
