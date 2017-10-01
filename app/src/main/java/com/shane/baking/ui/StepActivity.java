@@ -110,8 +110,8 @@ public class StepActivity extends AppCompatActivity {
 
         @Override
         public CharSequence getPageTitle(int position) {
-            final int POSITION_OFFSET = 1;
-            return String.format(Locale.getDefault(), "Step %d", (position + POSITION_OFFSET));
+            if (position == 0) return "Introduction";
+            return String.format(Locale.getDefault(), "Step %d", position);
         }
 
 

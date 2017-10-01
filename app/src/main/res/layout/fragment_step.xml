@@ -10,6 +10,10 @@
     tools:context="com.shane.baking.ui.StepFragment">
 
 
+    <com.google.android.exoplayer2.ui.SimpleExoPlayerView
+        android:id="@+id/player_view"
+        android:layout_width="0dp"
+        android:layout_height="0dp" />
 
     <TextView
         android:id="@+id/description_text_view"
