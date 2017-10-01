@@ -7,8 +7,10 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.shane.baking.R;
@@ -37,27 +39,43 @@ public class StepActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
 
-        Intent startingIntent = getIntent();
+        if ( ! startingIntentHasRecipe()) return;
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) actionBar.setDisplayHomeAsUpEnabled(true);
+        setupLayouts();
+    }
 
-        if ( ! startingIntent.hasExtra(Constants.EXTRA_RECIPE)) {
-            Toast.makeText(this, "failed to load steps", Toast.LENGTH_SHORT).show();
-            finish();
-            return;
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+            return true;
         }
+        return super.onOptionsItemSelected(item);
+    }
 
-        Recipe recipe = startingIntent.getParcelableExtra(Constants.EXTRA_RECIPE);
+    private void setupLayouts() {
+        Recipe recipe = getIntent().getParcelableExtra(Constants.EXTRA_RECIPE);
         List<Step> steps = recipe.getSteps();
 
         sectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager(), steps);
         viewPager.setAdapter(sectionsPagerAdapter);
 
-        if (startingIntent.hasExtra(Constants.EXTRA_STEP_ID)) {
-            int currentPosition = startingIntent.getIntExtra(Constants.EXTRA_STEP_ID, 0);
+        if (getIntent().hasExtra(Constants.EXTRA_STEP_ID)) {
+            int currentPosition = getIntent().getIntExtra(Constants.EXTRA_STEP_ID, 0);
             viewPager.setCurrentItem(currentPosition, true);
         }
 
         tabLayout.setupWithViewPager(viewPager);
         tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
+    }
+
+    private boolean startingIntentHasRecipe() {
+        Intent startingIntent = getIntent();
+        if (startingIntent.hasExtra(Constants.EXTRA_RECIPE)) return true;
+        Toast.makeText(this, "failed to load steps", Toast.LENGTH_SHORT).show();
+        finish();
+        return false;
     }
 
     private class SectionsPagerAdapter extends FragmentPagerAdapter {
