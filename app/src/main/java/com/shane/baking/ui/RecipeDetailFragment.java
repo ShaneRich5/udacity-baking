@@ -16,6 +16,7 @@ import com.shane.baking.adapters.StepAdapter;
 import com.shane.baking.models.Ingredient;
 import com.shane.baking.models.Recipe;
 import com.shane.baking.models.Step;
+import com.shane.baking.utils.Constants;
 
 import java.util.List;
 
@@ -40,7 +41,7 @@ public class RecipeDetailFragment extends Fragment implements StepAdapter.OnClic
 
     public static RecipeDetailFragment newInstance(Recipe recipe) {
         Bundle arguments = new Bundle();
-        arguments.putParcelable(RecipeDetailActivity.EXTRA_RECIPE, recipe);
+        arguments.putParcelable(Constants.EXTRA_RECIPE, recipe);
         RecipeDetailFragment fragment = new RecipeDetailFragment();
         fragment.setArguments(arguments);
         return fragment;
@@ -56,7 +57,7 @@ public class RecipeDetailFragment extends Fragment implements StepAdapter.OnClic
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        recipe = getArguments().getParcelable(RecipeDetailActivity.EXTRA_RECIPE);
+        recipe = getArguments().getParcelable(Constants.EXTRA_RECIPE);
         if (recipe == null) return;
 
         List<Ingredient> ingredients = recipe.getIngredients();
@@ -78,8 +79,8 @@ public class RecipeDetailFragment extends Fragment implements StepAdapter.OnClic
 
         List<Step> steps = recipe.getSteps();
         Intent stepIntent = new Intent(getContext(), StepActivity.class);
-        stepIntent.putExtra(RecipeDetailActivity.EXTRA_RECIPE, recipe);
-        stepIntent.putExtra()
+        stepIntent.putExtra(Constants.EXTRA_RECIPE, recipe);
+        stepIntent.putExtra(Constants.EXTRA_STEP_ID, stepId);
         getContext().startActivity(stepIntent);
     }
 }

@@ -8,4 +8,8 @@ public final class Constants {
     private Constants() {
         throw new AssertionError("Cannot instantiate Constants class");
     }
+
+    public static final String EXTRA_STEP_ID = "extra_step_id";
+    public static final String EXTRA_RECIPE = "extra_recipe";
+    public static final String ARG_STEPS = "arg_steps";
 }
