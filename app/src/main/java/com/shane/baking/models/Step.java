@@ -5,12 +5,16 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.Locale;
+
 /**
  * Created by Shane on 9/29/2017.
  */
 
 public class Step implements Parcelable {
     private int id;
+
+    @SerializedName("shortDescription")
     private String summary;
     private String description;
 
@@ -103,5 +107,12 @@ public class Step implements Parcelable {
         parcel.writeString(description);
         parcel.writeString(videoUrl);
         parcel.writeString(thumbnailUrl);
+    }
+
+    @Override
+    public String toString() {
+        return String.format(Locale.getDefault(),
+                "Summary: {id: %d, summary: %s, description: %s, videoUrl: %s, thumbnailUrl: %s}",
+                id, summary, description, videoUrl, thumbnailUrl);
     }
 }

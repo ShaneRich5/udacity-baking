@@ -33,8 +33,6 @@ public class RecipeDetailFragment extends Fragment implements StepAdapter.OnClic
     @BindView(R.id.ingredient_recycler) RecyclerView ingredientRecyclerView;
     @BindView(R.id.step_recycler) RecyclerView stepRecyclerView;
 
-    private IngredientAdapter ingredientAdapter;
-    private StepAdapter stepAdapter;
     private Recipe recipe;
 
     public RecipeDetailFragment() {}
@@ -63,8 +61,8 @@ public class RecipeDetailFragment extends Fragment implements StepAdapter.OnClic
         List<Ingredient> ingredients = recipe.getIngredients();
         List<Step> steps = recipe.getSteps();
 
-        ingredientAdapter = new IngredientAdapter(getContext(), ingredients);
-        stepAdapter = new StepAdapter(getContext(), this, steps);
+        IngredientAdapter ingredientAdapter = new IngredientAdapter(getContext(), ingredients);
+        StepAdapter stepAdapter = new StepAdapter(getContext(), this, steps);
 
         ingredientRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         stepRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));

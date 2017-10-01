@@ -9,12 +9,8 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.shane.baking.R;
@@ -23,6 +19,7 @@ import com.shane.baking.models.Step;
 import com.shane.baking.utils.Constants;
 
 import java.util.List;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -53,9 +50,16 @@ public class StepActivity extends AppCompatActivity {
         Recipe recipe = startingIntent.getParcelableExtra(Constants.EXTRA_RECIPE);
         List<Step> steps = recipe.getSteps();
 
-        sectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+        sectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager(), steps);
         viewPager.setAdapter(sectionsPagerAdapter);
+
+        if (startingIntent.hasExtra(Constants.EXTRA_STEP_ID)) {
+            int currentPosition = startingIntent.getIntExtra(Constants.EXTRA_STEP_ID, 0);
+            viewPager.setCurrentItem(currentPosition, true);
+        }
+
         tabLayout.setupWithViewPager(viewPager);
+        tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
     }
 
     @Override
@@ -86,35 +90,28 @@ public class StepActivity extends AppCompatActivity {
      */
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
+        private final List<Step> steps;
 
-        public SectionsPagerAdapter(FragmentManager fm) {
+        public SectionsPagerAdapter(FragmentManager fm, List<Step> steps) {
             super(fm);
+            this.steps = steps;
         }
 
         @Override
         public Fragment getItem(int position) {
-            // getItem is called to instantiate the fragment for the given page.
-            // Return a PlaceholderFragment (defined as a static inner class below).
-            return PlaceholderFragment.newInstance(position + 1);
+            Step step = steps.get(position);
+            return StepFragment.newInstance(step);
         }
 
         @Override
         public int getCount() {
-            // Show 3 total pages.
-            return 3;
+            return steps.size();
         }
 
         @Override
         public CharSequence getPageTitle(int position) {
-            switch (position) {
-                case 0:
-                    return "SECTION 1";
-                case 1:
-                    return "SECTION 2";
-                case 2:
-                    return "SECTION 3";
-            }
-            return null;
+            final int POSITION_OFFSET = 1;
+            return String.format(Locale.getDefault(), "Step %d", (position + POSITION_OFFSET));
         }
 
 

@@ -6,15 +6,20 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.shane.baking.R;
 import com.shane.baking.models.Step;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import static com.shane.baking.utils.Constants.ARG_STEP;
 
 
 public class StepFragment extends Fragment {
-    private static final String ARG_STEP = "step";
+
+    @BindView(R.id.description_text_view) TextView descriptionTextView;
 
     private Step step;
 
@@ -46,6 +51,6 @@ public class StepFragment extends Fragment {
 
         if (step == null) return;
 
-
+        descriptionTextView.setText(step.getDescription());
     }
 }

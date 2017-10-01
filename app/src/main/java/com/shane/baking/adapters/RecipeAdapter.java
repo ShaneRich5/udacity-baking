@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.shane.baking.R;
 import com.shane.baking.models.Recipe;
 import com.shane.baking.ui.RecipeDetailActivity;
+import com.shane.baking.utils.Constants;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -78,7 +79,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
             Recipe recipe = recipes.get(index);
 
             Intent intent = new Intent(context, RecipeDetailActivity.class);
-            intent.putExtra(RecipeDetailActivity.EXTRA_RECIPE, recipe);
+            intent.putExtra(Constants.EXTRA_RECIPE, recipe);
             context.startActivity(intent);
         }
     }

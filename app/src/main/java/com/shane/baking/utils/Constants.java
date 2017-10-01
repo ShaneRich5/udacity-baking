@@ -11,5 +11,5 @@ public final class Constants {
 
     public static final String EXTRA_STEP_ID = "extra_step_id";
     public static final String EXTRA_RECIPE = "extra_recipe";
-    public static final String ARG_STEPS = "arg_steps";
+    public static final String ARG_STEP = "arg_step";
 }
