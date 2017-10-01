@@ -11,8 +11,8 @@ import android.widget.TextView;
 import com.shane.baking.R;
 import com.shane.baking.models.Step;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -24,15 +24,18 @@ import butterknife.ButterKnife;
 public class StepAdapter extends RecyclerView.Adapter<StepAdapter.StepViewHolder> {
 
     private final Context context;
+    private final OnClickHandler clickHandler;
     private List<Step> steps;
 
-    public StepAdapter(Context context, List<Step> steps) {
-        this.context = context;
-        this.steps = steps;
+
+    public interface OnClickHandler {
+        public void onClick(int stepId);
     }
 
-    public StepAdapter(Context context) {
-        this(context, new ArrayList<>());
+    public StepAdapter(Context context, OnClickHandler clickHandler, List<Step> steps) {
+        this.context = context;
+        this.clickHandler = clickHandler;
+        this.steps = steps;
     }
 
     @Override
@@ -53,18 +56,27 @@ public class StepAdapter extends RecyclerView.Adapter<StepAdapter.StepViewHolder
         return steps.size();
     }
 
-    class StepViewHolder extends RecyclerView.ViewHolder {
+    class StepViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
         @BindView(R.id.description_text_view) TextView descriptionTextView;
 
         StepViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+            itemView.setOnClickListener(this);
         }
 
         void bind(@NonNull Step step) {
-            descriptionTextView.setText(step.getDescription());
+            int STEP_OFFSET = 1;
+            int stepNumber = STEP_OFFSET + step.getId();
+            descriptionTextView.setText(String.format(Locale.getDefault(),
+                    "%d. %s", stepNumber, step.getSummary()));
             itemView.setId(step.getId());
+        }
+
+        @Override
+        public void onClick(View view) {
+            clickHandler.onClick(itemView.getId());
         }
     }
 }

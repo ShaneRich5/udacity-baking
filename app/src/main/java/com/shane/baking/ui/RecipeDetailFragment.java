@@ -1,5 +1,6 @@
 package com.shane.baking.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -24,15 +25,16 @@ import butterknife.ButterKnife;
 /**
  * A placeholder fragment containing a simple view.
  */
-public class RecipeDetailFragment extends Fragment {
+public class RecipeDetailFragment extends Fragment implements StepAdapter.OnClickHandler{
 
     public static final String TAG = RecipeDetailFragment.class.getName();
 
     @BindView(R.id.ingredient_recycler) RecyclerView ingredientRecyclerView;
     @BindView(R.id.step_recycler) RecyclerView stepRecyclerView;
 
-    IngredientAdapter ingredientAdapter;
-    StepAdapter stepAdapter;
+    private IngredientAdapter ingredientAdapter;
+    private StepAdapter stepAdapter;
+    private Recipe recipe;
 
     public RecipeDetailFragment() {}
 
@@ -54,19 +56,30 @@ public class RecipeDetailFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        final Recipe recipe = getArguments().getParcelable(RecipeDetailActivity.EXTRA_RECIPE);
+        recipe = getArguments().getParcelable(RecipeDetailActivity.EXTRA_RECIPE);
         if (recipe == null) return;
 
         List<Ingredient> ingredients = recipe.getIngredients();
         List<Step> steps = recipe.getSteps();
 
         ingredientAdapter = new IngredientAdapter(getContext(), ingredients);
-        stepAdapter = new StepAdapter(getContext(), steps);
+        stepAdapter = new StepAdapter(getContext(), this, steps);
 
         ingredientRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         stepRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         ingredientRecyclerView.setAdapter(ingredientAdapter);
         stepRecyclerView.setAdapter(stepAdapter);
+    }
+
+    @Override
+    public void onClick(int stepId) {
+        if (recipe == null) return;
+
+        List<Step> steps = recipe.getSteps();
+        Intent stepIntent = new Intent(getContext(), StepActivity.class);
+        stepIntent.putExtra(RecipeDetailActivity.EXTRA_RECIPE, recipe);
+        stepIntent.putExtra()
+        getContext().startActivity(stepIntent);
     }
 }
