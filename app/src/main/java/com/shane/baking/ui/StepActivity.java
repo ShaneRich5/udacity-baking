@@ -9,8 +9,6 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.shane.baking.R;
@@ -62,37 +60,11 @@ public class StepActivity extends AppCompatActivity {
         tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_step, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    /**
-     * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
-     * one of the sections/tabs/pages.
-     */
-    public class SectionsPagerAdapter extends FragmentPagerAdapter {
+    private class SectionsPagerAdapter extends FragmentPagerAdapter {
 
         private final List<Step> steps;
 
-        public SectionsPagerAdapter(FragmentManager fm, List<Step> steps) {
+        SectionsPagerAdapter(FragmentManager fm, List<Step> steps) {
             super(fm);
             this.steps = steps;
         }
@@ -110,10 +82,8 @@ public class StepActivity extends AppCompatActivity {
 
         @Override
         public CharSequence getPageTitle(int position) {
-            if (position == 0) return "Introduction";
+            if (position == 0) return "Intro";
             return String.format(Locale.getDefault(), "Step %d", position);
         }
-
-
     }
 }

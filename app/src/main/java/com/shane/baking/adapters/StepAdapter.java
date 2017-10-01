@@ -70,10 +70,13 @@ public class StepAdapter extends RecyclerView.Adapter<StepAdapter.StepViewHolder
         }
 
         void bind(@NonNull Step step) {
-            int STEP_OFFSET = 1;
-            int stepNumber = STEP_OFFSET + step.getId();
-            descriptionTextView.setText(String.format(Locale.getDefault(),
-                    "%d. %s", stepNumber, step.getSummary()));
+            String description;
+
+            if (getAdapterPosition() == 0) description = step.getSummary();
+            else description = String.format(Locale.getDefault(),
+                    "%d. %s", getAdapterPosition(), step.getSummary());
+
+            descriptionTextView.setText(description);
             itemView.setId(step.getId());
         }
 
