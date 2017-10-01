@@ -3,7 +3,7 @@ package com.shane.baking.ui;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -51,9 +51,13 @@ public class RecipeListFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        final int NUM_OF_GRID_COLUMNS = getResources().getInteger(R.integer.recipe_grid_column_count);
+        final int PIXEL_GRID_SPACING = 10;
+
         recipeAdapter = new RecipeAdapter(getContext());
 
-        recipeRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recipeRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), NUM_OF_GRID_COLUMNS));
+        recipeRecyclerView.addItemDecoration(new GridSpaceItemDecoration(PIXEL_GRID_SPACING));
         recipeRecyclerView.setHasFixedSize(true);
         recipeRecyclerView.setAdapter(recipeAdapter);
 
