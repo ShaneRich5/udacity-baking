@@ -103,13 +103,23 @@ public class StepFragment extends Fragment implements ExoPlayer.EventListener {
     }
 
     private void startVideoInFullscreen() {
-        fullscreenDialog = new Dialog(getContext(), android.R.style.Theme_Black_NoTitleBar_Fullscreen);
+        fullscreenDialog = new Dialog(getContext(), android.R.style.Theme_Black_NoTitleBar_Fullscreen) {
+            @Override
+            public void onBackPressed() {
+                super.onBackPressed();
+                closeFullscreenVideo();
+            }
+        };
         ((ViewGroup) exoPlayerView.getParent()).removeView(exoPlayerView);
         fullscreenDialog.addContentView(exoPlayerView,
                 new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                         ViewGroup.LayoutParams.MATCH_PARENT));
         fullscreenDialog.show();
 
+    }
+
+    private void closeFullscreenVideo() {
+        ((StepActivity) getContext()).finish();
     }
 
     private String getVideoUrl(@NonNull Step step) {
