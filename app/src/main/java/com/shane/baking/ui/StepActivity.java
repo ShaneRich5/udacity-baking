@@ -70,6 +70,11 @@ public class StepActivity extends AppCompatActivity {
         tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
+
     private boolean startingIntentHasRecipe() {
         Intent startingIntent = getIntent();
         if (startingIntent.hasExtra(Constants.EXTRA_RECIPE)) return true;

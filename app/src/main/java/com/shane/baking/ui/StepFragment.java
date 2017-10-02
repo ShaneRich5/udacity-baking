@@ -1,7 +1,10 @@
 package com.shane.baking.ui;
 
+import android.app.Dialog;
+import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.media.session.MediaSessionCompat;
@@ -13,14 +16,19 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.google.android.exoplayer2.DefaultLoadControl;
+import com.google.android.exoplayer2.ExoPlaybackException;
+import com.google.android.exoplayer2.ExoPlayer;
 import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.LoadControl;
 import com.google.android.exoplayer2.SimpleExoPlayer;
+import com.google.android.exoplayer2.Timeline;
 import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory;
 import com.google.android.exoplayer2.extractor.ExtractorsFactory;
 import com.google.android.exoplayer2.source.ExtractorMediaSource;
 import com.google.android.exoplayer2.source.MediaSource;
+import com.google.android.exoplayer2.source.TrackGroupArray;
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
+import com.google.android.exoplayer2.trackselection.TrackSelectionArray;
 import com.google.android.exoplayer2.trackselection.TrackSelector;
 import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
 import com.google.android.exoplayer2.upstream.DataSource;
@@ -29,16 +37,18 @@ import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
 import com.shane.baking.R;
 import com.shane.baking.models.Step;
+import com.shane.baking.utils.StringUtil;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import timber.log.Timber;
 
 import static com.shane.baking.utils.Constants.ARG_STEP;
 
 
-public class StepFragment extends Fragment {
+public class StepFragment extends Fragment implements ExoPlayer.EventListener {
     public static final String TAG = StepFragment.class.getName();
+    public static final String STATE_SEEK_POSITION = "seek_position";
+    public static final String STATE_IS_PLAYING = "is_playing";
 
     @BindView(R.id.description_text_view) TextView descriptionTextView;
     @BindView(R.id.player_view) SimpleExoPlayerView exoPlayerView;
@@ -46,6 +56,7 @@ public class StepFragment extends Fragment {
     private PlaybackStateCompat.Builder playbackStateBuilder;
     private MediaSessionCompat mediaSession;
     private SimpleExoPlayer exoPlayer;
+    private Dialog fullscreenDialog;
     private Step step;
 
     public StepFragment() {}
@@ -70,44 +81,59 @@ public class StepFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        if (getArguments() == null) return;
+        if (getArguments() != null && getArguments().getParcelable(ARG_STEP) != null) {
+            Step step = getArguments().getParcelable(ARG_STEP);
+            assert step != null;
+            setupViewsWithStep(step);
+        }
+    }
 
-        Step step = getArguments().getParcelable(ARG_STEP);
-
-        if (step == null) return;
-
+    private void setupViewsWithStep(@NonNull Step step) {
         descriptionTextView.setText(step.getDescription());
+        String url = getVideoUrl(step);
 
-        String url = "";
+        if ( ! StringUtil.EMPTY.equals(url)) {
+            initializeMediaSession();
+            initializeVideoPlayer(url);
 
-        if ( ! TextUtils.isEmpty(step.getVideoUrl())) url = step.getVideoUrl();
-        else if ( ! TextUtils.isEmpty(step.getThumbnailUrl())) url = step.getThumbnailUrl();
+            if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                startVideoInFullscreen();
+            }
+        }
+    }
 
-        if ( ! url.equals("")) initializeVideoPlayer(url);
+    private void startVideoInFullscreen() {
+        fullscreenDialog = new Dialog(getContext(), android.R.style.Theme_Black_NoTitleBar_Fullscreen);
+        ((ViewGroup) exoPlayerView.getParent()).removeView(exoPlayerView);
+        fullscreenDialog.addContentView(exoPlayerView,
+                new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.MATCH_PARENT));
+        fullscreenDialog.show();
+
+    }
+
+    private String getVideoUrl(@NonNull Step step) {
+        if ( ! TextUtils.isEmpty(step.getVideoUrl())) return step.getVideoUrl();
+        if ( ! TextUtils.isEmpty(step.getThumbnailUrl())) return step.getThumbnailUrl();
+        return StringUtil.EMPTY;
     }
 
     @Override
     public void onPause() {
         super.onPause();
 
-        if (exoPlayer != null) {
-            playbackStateBuilder.setState(PlaybackStateCompat.STATE_PAUSED,
-                    exoPlayer.getCurrentPosition(), 1f);
-            mediaSession.setPlaybackState(playbackStateBuilder.build());
+        if (mediaSession != null) {
+            mediaSession.setActive(false);
         }
     }
 
     private void initializeVideoPlayer(String url) {
-        Timber.i(url);
-        initializeMediaSession();
-
         if (exoPlayer != null) return;
 
         TrackSelector trackSelector = new DefaultTrackSelector();
         LoadControl loadControl = new DefaultLoadControl();
 
         exoPlayer = ExoPlayerFactory.newSimpleInstance(getContext(), trackSelector, loadControl);
-
         exoPlayerView.setPlayer(exoPlayer);
 
         Uri videoUri = Uri.parse(url);
@@ -117,6 +143,7 @@ public class StepFragment extends Fragment {
 
         ExtractorsFactory extractorsFactory = new DefaultExtractorsFactory();
         MediaSource videoSource = new ExtractorMediaSource(videoUri, dataSourceFactory, extractorsFactory, null, null);
+
         exoPlayer.prepare(videoSource);
         exoPlayer.setPlayWhenReady(false);
     }
@@ -125,8 +152,8 @@ public class StepFragment extends Fragment {
         mediaSession = new MediaSessionCompat(getContext(), TAG);
         mediaSession.setFlags(MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS
                 | MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS);
-        mediaSession.setMediaButtonReceiver(null);
 
+        mediaSession.setMediaButtonReceiver(null);
         playbackStateBuilder = new PlaybackStateCompat.Builder()
                 .setActions(PlaybackStateCompat.ACTION_PLAY
                         | PlaybackStateCompat.ACTION_PAUSE
@@ -146,10 +173,38 @@ public class StepFragment extends Fragment {
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
+    public void onDestroyView() {
+        super.onDestroyView();
         releasePlayer();
     }
+
+    @Override
+    public void onTimelineChanged(Timeline timeline, Object manifest) {
+
+    }
+
+    @Override
+    public void onTracksChanged(TrackGroupArray trackGroups, TrackSelectionArray trackSelections) {
+
+    }
+
+    @Override
+    public void onLoadingChanged(boolean isLoading) {
+
+    }
+
+    @Override
+    public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
+
+    }
+
+    @Override
+    public void onPlayerError(ExoPlaybackException error) {
+
+    }
+
+    @Override
+    public void onPositionDiscontinuity() {}
 
     private class MediaSession extends MediaSessionCompat.Callback {
         @Override

@@ -50,19 +50,19 @@ public class IngredientAdapter extends RecyclerView.Adapter<IngredientAdapter.In
 
     class IngredientViewHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R.id.name_text_view) TextView nameTextView;
-        @BindView(R.id.quantity_text_view) TextView quantityTextView;
-        @BindView(R.id.unit_text_view) TextView unitTextView;
+        @BindView(R.id.ingredient_text_view) TextView ingredientTextView;
 
-        public IngredientViewHolder(View itemView) {
+        IngredientViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
 
         void bind(@NonNull Ingredient ingredient) {
-            nameTextView.setText(ingredient.getName());
-            quantityTextView.setText(String.valueOf(ingredient.getQuantity()));
-            unitTextView.setText(ingredient.getUnit());
+            String text = context.getResources().getString(R.string.ingredient_item,
+                    String.valueOf(ingredient.getQuantity()),
+                    ingredient.getUnit().toLowerCase(),
+                    ingredient.getName());
+            ingredientTextView.setText(text);
         }
     }
 }
