@@ -151,6 +151,7 @@ public class StepFragment extends Fragment implements ExoPlayer.EventListener {
         DataSource.Factory dataSourceFactory = new DefaultDataSourceFactory(getContext(),
                 Util.getUserAgent(getContext(), getString(R.string.app_name)), bandwidthMeter);
 
+
         ExtractorsFactory extractorsFactory = new DefaultExtractorsFactory();
         MediaSource videoSource = new ExtractorMediaSource(videoUri, dataSourceFactory, extractorsFactory, null, null);
 

@@ -1,6 +1,6 @@
 package com.shane.baking.ui;
 
-import android.content.Intent;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -35,6 +35,11 @@ public class RecipeDetailFragment extends Fragment implements StepAdapter.OnClic
     @BindView(R.id.step_recycler) RecyclerView stepRecyclerView;
 
     private Recipe recipe;
+    private InteractionListener listener;
+
+    interface InteractionListener {
+        void onStepSelected(Step step);
+    }
 
     public RecipeDetailFragment() {}
 
@@ -76,13 +81,22 @@ public class RecipeDetailFragment extends Fragment implements StepAdapter.OnClic
     }
 
     @Override
-    public void onClick(int stepId) {
+    public void onClick(Step step) {
         if (recipe == null) return;
+        listener.onStepSelected(step);
+    }
 
-        List<Step> steps = recipe.getSteps();
-        Intent stepIntent = new Intent(getContext(), StepActivity.class);
-        stepIntent.putExtra(Constants.EXTRA_RECIPE, recipe);
-        stepIntent.putExtra(Constants.EXTRA_STEP_ID, stepId);
-        getContext().startActivity(stepIntent);
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof RecipeDetailActivity)
+            throw new IllegalStateException("Activity must implement InteractionListener");
+        listener = (InteractionListener) context;
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        listener = null;
     }
 }

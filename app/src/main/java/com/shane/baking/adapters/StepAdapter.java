@@ -1,7 +1,9 @@
 package com.shane.baking.adapters;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.annotation.NonNull;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,10 +29,10 @@ public class StepAdapter extends RecyclerView.Adapter<StepAdapter.StepViewHolder
     private final Context context;
     private final OnClickHandler clickHandler;
     private List<Step> steps;
-
+    private int selectedIndex = RecyclerView.NO_POSITION;
 
     public interface OnClickHandler {
-        public void onClick(int stepId);
+        public void onClick(Step step);
     }
 
     public StepAdapter(Context context, OnClickHandler clickHandler, List<Step> steps) {
@@ -52,6 +54,9 @@ public class StepAdapter extends RecyclerView.Adapter<StepAdapter.StepViewHolder
     public void onBindViewHolder(StepViewHolder holder, int position) {
         Step step = steps.get(position);
         holder.bind(step);
+        int colorId = (selectedIndex != position) ? Color.WHITE :
+                ResourcesCompat.getColor(context.getResources(), R.color.primary_light, null);
+        holder.itemView.setBackgroundColor(colorId);
     }
 
     @Override
@@ -80,9 +85,19 @@ public class StepAdapter extends RecyclerView.Adapter<StepAdapter.StepViewHolder
             itemView.setId(step.getId());
         }
 
+
         @Override
         public void onClick(View view) {
-            clickHandler.onClick(itemView.getId());
+            final int INDEX_OFFSET = 1;
+            clickHandler.onClick(steps.get(getAdapterPosition()));
+            int newSelectedIndex = getAdapterPosition() - INDEX_OFFSET;
+
+            if (selectedIndex == newSelectedIndex
+                    || newSelectedIndex == RecyclerView.NO_POSITION) return;
+
+            notifyItemChanged(selectedIndex);
+            notifyItemChanged(newSelectedIndex);
+            selectedIndex = newSelectedIndex;
         }
     }
 }

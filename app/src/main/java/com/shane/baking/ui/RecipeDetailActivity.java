@@ -2,6 +2,7 @@ package com.shane.baking.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
@@ -13,6 +14,7 @@ import android.widget.Toast;
 
 import com.shane.baking.R;
 import com.shane.baking.models.Recipe;
+import com.shane.baking.models.Step;
 import com.shane.baking.utils.Constants;
 
 import butterknife.BindView;
@@ -20,10 +22,14 @@ import butterknife.ButterKnife;
 
 import static com.shane.baking.utils.Constants.EXTRA_RECIPE;
 
-public class RecipeDetailActivity extends AppCompatActivity {
+public class RecipeDetailActivity extends AppCompatActivity
+        implements RecipeDetailFragment.InteractionListener {
 
     @BindView(R.id.toolbar) Toolbar toolbar;
-    @BindView(R.id.fragment_container) FrameLayout fragmentContainer;
+    @BindView(R.id.fragment_container) FrameLayout fragmentListContainer;
+    @Nullable @BindView(R.id.fragment_detail) FrameLayout fragmentDetailContainer;
+
+    private Recipe recipe;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,7 +46,7 @@ public class RecipeDetailActivity extends AppCompatActivity {
             return;
         }
 
-        Recipe recipe = startingIntent.getParcelableExtra(EXTRA_RECIPE);
+        recipe = startingIntent.getParcelableExtra(EXTRA_RECIPE);
 
         ActionBar actionBar = getSupportActionBar();
 
@@ -51,10 +57,10 @@ public class RecipeDetailActivity extends AppCompatActivity {
 
         FragmentManager manager = getSupportFragmentManager();
 
-        if (manager.findFragmentById(fragmentContainer.getId()) == null) {
+        if (manager.findFragmentById(fragmentListContainer.getId()) == null) {
             RecipeDetailFragment fragment = RecipeDetailFragment.newInstance(recipe);
             FragmentTransaction transaction = manager.beginTransaction();
-            transaction.add(fragmentContainer.getId(), fragment, RecipeDetailFragment.TAG);
+            transaction.add(fragmentListContainer.getId(), fragment, RecipeDetailFragment.TAG);
             transaction.commit();
         }
     }
@@ -66,5 +72,20 @@ public class RecipeDetailActivity extends AppCompatActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onStepSelected(Step step) {
+        if (fragmentDetailContainer == null) {
+            Intent stepIntent = new Intent(this, StepActivity.class);
+            stepIntent.putExtra(Constants.EXTRA_RECIPE, recipe);
+            stepIntent.putExtra(Constants.EXTRA_STEP_ID, step.getId());
+            startActivity(stepIntent);
+        } else {
+            StepFragment stepFragment = StepFragment.newInstance(step);
+            getSupportFragmentManager().beginTransaction()
+                    .replace(fragmentDetailContainer.getId(), stepFragment, StepFragment.TAG)
+                    .commit();
+        }
     }
 }
