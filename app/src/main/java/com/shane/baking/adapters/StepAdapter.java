@@ -90,14 +90,14 @@ public class StepAdapter extends RecyclerView.Adapter<StepAdapter.StepViewHolder
         public void onClick(View view) {
             final int INDEX_OFFSET = 1;
             clickHandler.onClick(steps.get(getAdapterPosition()));
-            int newSelectedIndex = getAdapterPosition() - INDEX_OFFSET;
 
-            if (selectedIndex == newSelectedIndex
-                    || newSelectedIndex == RecyclerView.NO_POSITION) return;
+            if (selectedIndex == getAdapterPosition()
+                    || getAdapterPosition() == RecyclerView.NO_POSITION) return;
 
+            int oldSelectedIndex = selectedIndex;
+            selectedIndex = getAdapterPosition();
+            notifyItemChanged(oldSelectedIndex);
             notifyItemChanged(selectedIndex);
-            notifyItemChanged(newSelectedIndex);
-            selectedIndex = newSelectedIndex;
         }
     }
 }

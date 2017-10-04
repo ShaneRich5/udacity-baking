@@ -82,8 +82,7 @@ public class StepFragment extends Fragment implements ExoPlayer.EventListener {
         super.onViewCreated(view, savedInstanceState);
 
         if (getArguments() != null && getArguments().getParcelable(ARG_STEP) != null) {
-            Step step = getArguments().getParcelable(ARG_STEP);
-            assert step != null;
+            step = getArguments().getParcelable(ARG_STEP);
             setupViewsWithStep(step);
         }
     }
@@ -92,13 +91,22 @@ public class StepFragment extends Fragment implements ExoPlayer.EventListener {
         descriptionTextView.setText(step.getDescription());
         String url = getVideoUrl(step);
 
-        if ( ! StringUtil.EMPTY.equals(url)) {
+        if (StringUtil.EMPTY.equals(url)) {
+            exoPlayerView.setVisibility(View.GONE);
+        } else {
             initializeMediaSession();
-            initializeVideoPlayer(url);
 
             if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
                 startVideoInFullscreen();
             }
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (exoPlayerView.getVisibility() != View.GONE) {
+            initializeVideoPlayer(getVideoUrl(step));
         }
     }
 

@@ -90,8 +90,9 @@ public class RecipeDetailFragment extends Fragment implements StepAdapter.OnClic
     public void onAttach(Context context) {
         super.onAttach(context);
         if (context instanceof RecipeDetailActivity)
+            listener = (InteractionListener) context;
+        else
             throw new IllegalStateException("Activity must implement InteractionListener");
-        listener = (InteractionListener) context;
     }
 
     @Override
