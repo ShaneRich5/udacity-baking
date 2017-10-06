@@ -4,7 +4,6 @@ import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -156,14 +155,13 @@ public class RecipeDetailFragment extends Fragment implements StepAdapter.OnClic
     private void toggleBookmark() {
         isRecipeBookmarked().flatMap(isBookmarked -> {
             ContentResolver contentResolver = getContext().getContentResolver();
-            Uri recipeUri = RecipeEntry.buildRecipeUri(recipe.getId());
 
             return Observable.create((ObservableOnSubscribe<Boolean>) emitter -> {
                 if (isBookmarked) {
-                    contentResolver.delete(recipeUri, null, null);
+                    contentResolver.delete(RecipeEntry.buildRecipeUri(recipe.getId()), null, null);
                 } else {
                     ContentValues contentValues = new Recipe.Builder().build(recipe);
-                    contentResolver.insert(recipeUri, contentValues);
+                    contentResolver.insert(RecipeEntry.CONTENT_URI, contentValues);
                 }
 
                 emitter.onNext( ! isBookmarked);
