@@ -32,9 +32,9 @@
         <provider
             android:name=".data.RecipeProvider"
             android:authorities="com.shane.baking"
-            android:exported="false" />
+            android:exported="true" />
 
-        <receiver android:name=".widget.RecipeWidget">
+        <receiver android:name=".widget.RecipeWidgetProvider">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>

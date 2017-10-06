@@ -11,7 +11,7 @@ import com.shane.baking.R;
  * Implementation of App Widget functionality.
  * App Widget Configuration implemented in {@link RecipeWidgetConfigureActivity RecipeWidgetConfigureActivity}
  */
-public class RecipeWidget extends AppWidgetProvider {
+public class RecipeWidgetProvider extends AppWidgetProvider {
 
     static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
                                 int appWidgetId) {
