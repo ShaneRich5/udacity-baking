@@ -7,7 +7,7 @@ import android.arch.persistence.room.Query;
 import android.arch.persistence.room.Update;
 import android.database.Cursor;
 
-import com.shane.baking.data.RecipeContract;
+import com.shane.baking.data.RecipeContract.IngredientEntry;
 import com.shane.baking.models.Ingredient;
 
 import static android.arch.persistence.room.OnConflictStrategy.REPLACE;
@@ -23,8 +23,9 @@ public interface IngredientDao {
     @Insert(onConflict = REPLACE)
     int insertAll(Ingredient[] ingredients);
 
-    @Query("SELECT * from " + RecipeContract.IngredientEntry.TABLE_NAME)
-    Cursor selectAllByRecipe(int recipeId);
+    @Query("SELECT * FROM " + IngredientEntry.TABLE_NAME + " WHERE " +
+            IngredientEntry.COLUMN_RECIPE + " = :recipeId")
+    Cursor findAllByRecipe(int recipeId);
 
     @Update(onConflict = REPLACE)
     int update(Ingredient ingredient);
@@ -32,7 +33,7 @@ public interface IngredientDao {
     @Delete
     void delete(Ingredient ingredient);
 
-    @Query("DELETE FROM " + RecipeContract.IngredientEntry.TABLE_NAME + " WHERE " +
-            RecipeContract.IngredientEntry._ID + " = :recipeId")
+    @Query("DELETE FROM " + IngredientEntry.TABLE_NAME + " WHERE " +
+            IngredientEntry.COLUMN_RECIPE + " = :recipeId")
     int deleteByRecipeId(long id);
 }

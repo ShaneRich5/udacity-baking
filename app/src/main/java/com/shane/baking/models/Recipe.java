@@ -2,6 +2,7 @@ package com.shane.baking.models;
 
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -31,7 +32,10 @@ public class Recipe implements Parcelable {
     @SerializedName("image")
     private String imageUrl;
 
+    @Ignore
     private List<Step> steps = new ArrayList<>();
+
+    @Ignore
     private List<Ingredient> ingredients = new ArrayList<>();
 
     public long getId() {

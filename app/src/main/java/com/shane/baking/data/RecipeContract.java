@@ -52,7 +52,6 @@ public class RecipeContract {
                 "vnd.android.cursor.item/" + CONTENT_URI + "/" + PATH_STEP;
 
         public static final String TABLE_NAME = "steps";
-        public static final String COLUMN_INDEX = "index";
         public static final String COLUMN_SUMMARY = "summary";
         public static final String COLUMN_DESCRIPTION = "description";
         public static final String COLUMN_VIDEO_URL = "video_url";

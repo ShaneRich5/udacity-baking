@@ -2,11 +2,12 @@ package com.shane.baking.models;
 
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
-import android.arch.persistence.room.PrimaryKey;
+import android.arch.persistence.room.ForeignKey;
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
+import com.shane.baking.data.RecipeContract;
 import com.shane.baking.data.RecipeContract.StepEntry;
 
 import java.util.Locale;
@@ -14,10 +15,14 @@ import java.util.Locale;
 /**
  * Created by Shane on 9/29/2017.
  */
-@Entity(tableName = StepEntry.TABLE_NAME)
+@Entity(tableName = StepEntry.TABLE_NAME,
+        primaryKeys = {StepEntry._ID, StepEntry.COLUMN_RECIPE},
+        foreignKeys = @ForeignKey(entity = Recipe.class,
+                parentColumns = RecipeContract.RecipeEntry._ID,
+                childColumns = StepEntry.COLUMN_RECIPE))
 public class Step implements Parcelable {
-    @PrimaryKey
-    private int id;
+    @ColumnInfo(name = StepEntry._ID)
+    private long id;
 
     @ColumnInfo(name = StepEntry.COLUMN_SUMMARY)
     @SerializedName("shortDescription")
@@ -34,21 +39,16 @@ public class Step implements Parcelable {
     @SerializedName("thumbnailURL")
     private String thumbnailUrl;
 
+    @ColumnInfo(name = StepEntry.COLUMN_RECIPE)
+    private long recipeId;
+
     public Step() {}
 
-    public Step(int id, String summary, String description, String videoUrl, String thumbnailUrl) {
-        this.id = id;
-        this.summary = summary;
-        this.description = description;
-        this.videoUrl = videoUrl;
-        this.thumbnailUrl = thumbnailUrl;
-    }
-
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -84,13 +84,21 @@ public class Step implements Parcelable {
         this.thumbnailUrl = thumbnailUrl;
     }
 
+    public long getRecipeId() {
+        return recipeId;
+    }
+
+    public void setRecipeId(long recipeId) {
+        this.recipeId = recipeId;
+    }
 
     protected Step(Parcel in) {
-        id = in.readInt();
+        id = in.readLong();
         summary = in.readString();
         description = in.readString();
         videoUrl = in.readString();
         thumbnailUrl = in.readString();
+        recipeId = in.readLong();
     }
 
     public static final Creator<Step> CREATOR = new Creator<Step>() {
@@ -112,11 +120,12 @@ public class Step implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeInt(id);
+        parcel.writeLong(id);
         parcel.writeString(summary);
         parcel.writeString(description);
         parcel.writeString(videoUrl);
         parcel.writeString(thumbnailUrl);
+        parcel.writeLong(recipeId);
     }
 
     @Override
