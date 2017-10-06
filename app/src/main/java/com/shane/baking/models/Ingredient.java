@@ -3,7 +3,9 @@ package com.shane.baking.models;
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.ForeignKey;
+import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
+import android.content.ContentValues;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -35,16 +37,10 @@ public class Ingredient implements Parcelable {
     @ColumnInfo(name = IngredientEntry.COLUMN_QUALITY)
     private double quantity;
 
+    @ColumnInfo(name = IngredientEntry.COLUMN_RECIPE)
     private long recipeId;
 
-    public Ingredient() {
-    }
-
-    public Ingredient(String name, String unit, double quantity) {
-        this.name = name;
-        this.unit = unit;
-        this.quantity = quantity;
-    }
+    public Ingredient() {}
 
     public long getId() {
         return id;
@@ -86,7 +82,7 @@ public class Ingredient implements Parcelable {
         this.recipeId = recipeId;
     }
 
-
+    @Ignore
     protected Ingredient(Parcel in) {
         id = in.readLong();
         name = in.readString();
@@ -119,5 +115,9 @@ public class Ingredient implements Parcelable {
         parcel.writeString(unit);
         parcel.writeDouble(quantity);
         parcel.writeLong(recipeId);
+    }
+
+    public static Ingredient fromContentValues(ContentValues values) {
+        return null;
     }
 }

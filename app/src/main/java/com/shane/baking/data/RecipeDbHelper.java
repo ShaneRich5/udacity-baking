@@ -36,7 +36,6 @@ public class RecipeDbHelper extends SQLiteOpenHelper {
 
         db.execSQL("CREATE TABLE " + StepEntry.TABLE_NAME + " (" +
                 StepEntry._ID + " INTEGER AUTOINCREMENT PRIMARY KEY, " +
-                StepEntry.COLUMN_INDEX + " INTEGER NOT NULL, " +
                 StepEntry.COLUMN_SUMMARY + " TEXT NOT NULL, " +
                 StepEntry.COLUMN_DESCRIPTION + " TEXT NOT NULL, " +
                 StepEntry.COLUMN_VIDEO_URL + " TEXT, " +

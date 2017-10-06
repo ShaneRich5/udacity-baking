@@ -3,11 +3,13 @@ package com.shane.baking.models;
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.ForeignKey;
+import android.arch.persistence.room.Ignore;
+import android.content.ContentValues;
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
-import com.shane.baking.data.RecipeContract;
+import com.shane.baking.data.RecipeContract.RecipeEntry;
 import com.shane.baking.data.RecipeContract.StepEntry;
 
 import java.util.Locale;
@@ -18,7 +20,7 @@ import java.util.Locale;
 @Entity(tableName = StepEntry.TABLE_NAME,
         primaryKeys = {StepEntry._ID, StepEntry.COLUMN_RECIPE},
         foreignKeys = @ForeignKey(entity = Recipe.class,
-                parentColumns = RecipeContract.RecipeEntry._ID,
+                parentColumns = RecipeEntry._ID,
                 childColumns = StepEntry.COLUMN_RECIPE))
 public class Step implements Parcelable {
     @ColumnInfo(name = StepEntry._ID)
@@ -92,6 +94,7 @@ public class Step implements Parcelable {
         this.recipeId = recipeId;
     }
 
+    @Ignore
     protected Step(Parcel in) {
         id = in.readLong();
         summary = in.readString();
@@ -133,5 +136,49 @@ public class Step implements Parcelable {
         return String.format(Locale.getDefault(),
                 "Summary: {id: %d, summary: %s, description: %s, videoUrl: %s, thumbnailUrl: %s}",
                 id, summary, description, videoUrl, thumbnailUrl);
+    }
+
+    public static Step fromContentValues(ContentValues values) {
+        return new Step();
+    }
+
+    public static final class Builder {
+        private final ContentValues values = new ContentValues();
+
+        public Builder() {}
+
+        public Builder id(long id) {
+            values.put(StepEntry._ID, id);
+            return this;
+        }
+
+        public Builder summary(String summary) {
+            values.put(StepEntry.COLUMN_SUMMARY, summary);
+            return this;
+        }
+
+        public Builder description(String description) {
+            values.put(StepEntry.COLUMN_DESCRIPTION, description);
+            return this;
+        }
+
+        public Builder videoUrl(String videoUrl) {
+            values.put(StepEntry.COLUMN_VIDEO_URL, videoUrl);
+            return this;
+        }
+
+        public Builder thumbnailUrl(String thumbnailUrl) {
+            values.put(StepEntry.COLUMN_THUMBNAIL_URL, thumbnailUrl);
+            return this;
+        }
+
+        public Builder recipeId(long recipeId) {
+            values.put(StepEntry.COLUMN_RECIPE, recipeId);
+            return this;
+        }
+
+        public ContentValues build() {
+            return values;
+        }
     }
 }

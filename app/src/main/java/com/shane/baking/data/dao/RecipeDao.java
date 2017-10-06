@@ -9,6 +9,8 @@ import android.database.Cursor;
 import com.shane.baking.data.RecipeContract.RecipeEntry;
 import com.shane.baking.models.Recipe;
 
+import java.util.List;
+
 import static android.arch.persistence.room.OnConflictStrategy.REPLACE;
 
 /**
@@ -17,13 +19,20 @@ import static android.arch.persistence.room.OnConflictStrategy.REPLACE;
 @Dao
 public interface RecipeDao {
     @Insert(onConflict = REPLACE)
-    int insert(Recipe recipe);
+    long insert(Recipe recipe);
+
+    @Insert(onConflict = REPLACE)
+    List<Long> insertAll(Recipe... recipes);
+
+    @Query("SELECT * FROM " + RecipeEntry.TABLE_NAME)
+    Cursor selectAll();
 
     @Query("SELECT * FROM " + RecipeEntry.TABLE_NAME + " WHERE " + RecipeEntry._ID + " = :id")
-    Cursor findById(long id);
+    Cursor selectById(long id);
 
     @Update(onConflict = REPLACE)
     int update(Recipe recipe);
 
-
+    @Query("DELETE FROM " + RecipeEntry.TABLE_NAME + " WHERE " + RecipeEntry._ID + " = :id")
+    int deleteById(long id);
 }

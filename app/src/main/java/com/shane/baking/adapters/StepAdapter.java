@@ -82,7 +82,7 @@ public class StepAdapter extends RecyclerView.Adapter<StepAdapter.StepViewHolder
                     "%d. %s", getAdapterPosition(), step.getSummary());
 
             descriptionTextView.setText(description);
-            itemView.setId(step.getId());
+            itemView.setId((int) step.getId());
         }
 
 

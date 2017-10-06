@@ -4,6 +4,7 @@ import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
+import android.content.ContentValues;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -20,6 +21,7 @@ import java.util.Locale;
 @Entity(tableName = RecipeEntry.TABLE_NAME)
 public class Recipe implements Parcelable {
     @PrimaryKey
+    @ColumnInfo(name = RecipeEntry._ID, index = true)
     private long id;
 
     @ColumnInfo(name = RecipeEntry.COLUMN_NAME)
@@ -37,6 +39,8 @@ public class Recipe implements Parcelable {
 
     @Ignore
     private List<Ingredient> ingredients = new ArrayList<>();
+
+    public Recipe() {}
 
     public long getId() {
         return id;
@@ -86,6 +90,7 @@ public class Recipe implements Parcelable {
         this.ingredients = ingredients;
     }
 
+    @Ignore
     protected Recipe(Parcel in) {
         id = in.readLong();
         name = in.readString();
@@ -126,5 +131,49 @@ public class Recipe implements Parcelable {
     public String toString() {
         return String.format(Locale.getDefault(),
                 "Recipe: { id: %d, name: %s, servings: %d}", id, name, servings);
+    }
+
+    public static final class Builder {
+        private final ContentValues values = new ContentValues();
+
+        public Builder id(long id) {
+            values.put(RecipeEntry._ID, id);
+            return this;
+        }
+
+        public Builder name (String name) {
+            values.put(RecipeEntry.COLUMN_NAME, name);
+            return this;
+        }
+        public Builder servings(int servings) {
+            values.put(RecipeEntry.COLUMN_SERVINGS, servings);
+            return this;
+        }
+
+        public Builder imageUrl (String imageUrl) {
+            values.put(RecipeEntry.COLUMN_IMAGE_URL, imageUrl);
+            return this;
+        }
+
+        public ContentValues build() {
+            return values;
+        }
+
+        public ContentValues build(Recipe recipe) {
+            id(recipe.id);
+            name(recipe.name);
+            servings(recipe.servings);
+            imageUrl(recipe.imageUrl);
+            return build();
+        }
+    }
+
+    public static Recipe fromContentValues(ContentValues values) {
+        Recipe recipe = new Recipe();
+        recipe.setId(values.getAsShort(RecipeEntry._ID));
+        recipe.setName(values.getAsString(RecipeEntry.COLUMN_NAME));
+        recipe.setServings(values.getAsInteger(RecipeEntry.COLUMN_SERVINGS));
+        recipe.setImageUrl(values.getAsString(RecipeEntry.COLUMN_IMAGE_URL));
+        return recipe;
     }
 }

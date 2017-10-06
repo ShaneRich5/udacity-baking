@@ -10,6 +10,8 @@ import android.database.Cursor;
 import com.shane.baking.data.RecipeContract.IngredientEntry;
 import com.shane.baking.models.Ingredient;
 
+import java.util.List;
+
 import static android.arch.persistence.room.OnConflictStrategy.REPLACE;
 
 /**
@@ -18,14 +20,17 @@ import static android.arch.persistence.room.OnConflictStrategy.REPLACE;
 @Dao
 public interface IngredientDao {
     @Insert(onConflict = REPLACE)
-    int insert(Ingredient ingredient);
+    long insert(Ingredient ingredient);
 
     @Insert(onConflict = REPLACE)
-    int insertAll(Ingredient[] ingredients);
+    List<Long> insertAll(Ingredient[] ingredients);
 
     @Query("SELECT * FROM " + IngredientEntry.TABLE_NAME + " WHERE " +
-            IngredientEntry.COLUMN_RECIPE + " = :recipeId")
-    Cursor findAllByRecipe(int recipeId);
+            IngredientEntry._ID + " = :recipeId")
+    Cursor selectById(long recipeId);
+
+    @Query("SELECT * FROM " + IngredientEntry.TABLE_NAME)
+    Cursor selectAll();
 
     @Update(onConflict = REPLACE)
     int update(Ingredient ingredient);
@@ -35,5 +40,8 @@ public interface IngredientDao {
 
     @Query("DELETE FROM " + IngredientEntry.TABLE_NAME + " WHERE " +
             IngredientEntry.COLUMN_RECIPE + " = :recipeId")
-    int deleteByRecipeId(long id);
+    int deleteByRecipeId(long recipeId);
+
+    @Query("SELECT COUNT(*) FROM " + IngredientEntry.TABLE_NAME)
+    int count();
 }
