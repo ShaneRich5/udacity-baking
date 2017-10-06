@@ -1,26 +1,36 @@
 package com.shane.baking.models;
 
+import android.arch.persistence.room.ColumnInfo;
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.PrimaryKey;
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
+import com.shane.baking.data.RecipeContract.StepEntry;
 
 import java.util.Locale;
 
 /**
  * Created by Shane on 9/29/2017.
  */
-
+@Entity(tableName = StepEntry.TABLE_NAME)
 public class Step implements Parcelable {
+    @PrimaryKey
     private int id;
 
+    @ColumnInfo(name = StepEntry.COLUMN_SUMMARY)
     @SerializedName("shortDescription")
     private String summary;
+
+    @ColumnInfo(name = StepEntry.COLUMN_DESCRIPTION)
     private String description;
 
+    @ColumnInfo(name = StepEntry.COLUMN_VIDEO_URL)
     @SerializedName("videoURL")
     private String videoUrl;
 
+    @ColumnInfo(name = StepEntry.COLUMN_THUMBNAIL_URL)
     @SerializedName("thumbnailURL")
     private String thumbnailUrl;
 

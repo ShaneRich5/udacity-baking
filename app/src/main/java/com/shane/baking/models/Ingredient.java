@@ -1,22 +1,41 @@
 package com.shane.baking.models;
 
+import android.arch.persistence.room.ColumnInfo;
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.ForeignKey;
+import android.arch.persistence.room.PrimaryKey;
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
+import com.shane.baking.data.RecipeContract;
+import com.shane.baking.data.RecipeContract.IngredientEntry;
+
 
 /**
  * Created by Shane on 9/29/2017.
  */
-
+@Entity(tableName = IngredientEntry.TABLE_NAME,
+        foreignKeys = @ForeignKey(entity = Recipe.class,
+                parentColumns = RecipeContract.RecipeEntry._ID,
+                childColumns = IngredientEntry.COLUMN_RECIPE))
 public class Ingredient implements Parcelable {
+    @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = IngredientEntry._ID)
+    private long id;
+
+    @ColumnInfo(name = IngredientEntry.COLUMN_NAME)
     @SerializedName("ingredient")
     private String name;
 
+    @ColumnInfo(name = IngredientEntry.COLUMN_UNIT)
     @SerializedName("measure")
     private String unit;
 
+    @ColumnInfo(name = IngredientEntry.COLUMN_QUALITY)
     private double quantity;
+
+    private long recipeId;
 
     public Ingredient() {
     }
@@ -25,6 +44,14 @@ public class Ingredient implements Parcelable {
         this.name = name;
         this.unit = unit;
         this.quantity = quantity;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -51,10 +78,21 @@ public class Ingredient implements Parcelable {
         this.quantity = quantity;
     }
 
+    public long getRecipeId() {
+        return recipeId;
+    }
+
+    public void setRecipeId(long recipeId) {
+        this.recipeId = recipeId;
+    }
+
+
     protected Ingredient(Parcel in) {
+        id = in.readLong();
         name = in.readString();
         unit = in.readString();
         quantity = in.readDouble();
+        recipeId = in.readLong();
     }
 
     public static final Creator<Ingredient> CREATOR = new Creator<Ingredient>() {
@@ -76,8 +114,10 @@ public class Ingredient implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeLong(id);
         parcel.writeString(name);
         parcel.writeString(unit);
         parcel.writeDouble(quantity);
+        parcel.writeLong(recipeId);
     }
 }

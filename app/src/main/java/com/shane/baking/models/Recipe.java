@@ -1,9 +1,13 @@
 package com.shane.baking.models;
 
+import android.arch.persistence.room.ColumnInfo;
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.PrimaryKey;
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
+import com.shane.baking.data.RecipeContract.RecipeEntry;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,23 +16,29 @@ import java.util.Locale;
 /**
  * Created by Shane on 9/29/2017.
  */
-
+@Entity(tableName = RecipeEntry.TABLE_NAME)
 public class Recipe implements Parcelable {
-    private int id;
+    @PrimaryKey
+    private long id;
+
+    @ColumnInfo(name = RecipeEntry.COLUMN_NAME)
     private String name;
+
+    @ColumnInfo(name = RecipeEntry.COLUMN_SERVINGS)
     private int servings;
 
+    @ColumnInfo(name = RecipeEntry.COLUMN_IMAGE_URL)
     @SerializedName("image")
     private String imageUrl;
 
     private List<Step> steps = new ArrayList<>();
     private List<Ingredient> ingredients = new ArrayList<>();
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -73,7 +83,7 @@ public class Recipe implements Parcelable {
     }
 
     protected Recipe(Parcel in) {
-        id = in.readInt();
+        id = in.readLong();
         name = in.readString();
         servings = in.readInt();
         imageUrl = in.readString();
@@ -100,7 +110,7 @@ public class Recipe implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeInt(id);
+        parcel.writeLong(id);
         parcel.writeString(name);
         parcel.writeInt(servings);
         parcel.writeString(imageUrl);

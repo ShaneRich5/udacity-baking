@@ -22,46 +22,31 @@ public class RecipeDbHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        createRecipeTable(db);
-        createIngredientTable(db);
-        createStepTable(db);
-    }
+        db.execSQL("CREATE TABLE " + RecipeEntry.TABLE_NAME + " (" +
+                RecipeEntry._ID + " INTEGER NOT NULL PRIMARY KEY, " +
+                RecipeEntry.COLUMN_NAME + " TEXT NOT NULL, " +
+                RecipeEntry.COLUMN_SERVINGS + " INTEGER NOT NULL, " +
+                RecipeEntry.COLUMN_IMAGE_URL + " TEXT)");
 
-    private void createStepTable(SQLiteDatabase db) {
-        final String CREATE_STATEMENT = "CREATE TABLE " + StepEntry.TABLE_NAME + " (" +
+        db.execSQL("CREATE TABLE " + IngredientEntry.TABLE_NAME + " (" +
+                IngredientEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                IngredientEntry.COLUMN_NAME + " TEXT NOT NULL, " +
+                IngredientEntry.COLUMN_QUALITY + " INTEGER NOT NULL, " +
+                IngredientEntry.COLUMN_UNIT + " TEXT NOT NULL)");
+
+        db.execSQL("CREATE TABLE " + StepEntry.TABLE_NAME + " (" +
                 StepEntry._ID + " INTEGER AUTOINCREMENT PRIMARY KEY, " +
                 StepEntry.COLUMN_INDEX + " INTEGER NOT NULL, " +
                 StepEntry.COLUMN_SUMMARY + " TEXT NOT NULL, " +
                 StepEntry.COLUMN_DESCRIPTION + " TEXT NOT NULL, " +
                 StepEntry.COLUMN_VIDEO_URL + " TEXT, " +
-                StepEntry.COLUMN_THUMBNAIL_URL + " TEXT, " +
-                "FOREIGN KEY (" + StepEntry.COLUMN_RECIPE + ") " +
-                "REFERENCES " + RecipeEntry.TABLE_NAME + " (" + RecipeEntry._ID + "));";
-        db.execSQL(CREATE_STATEMENT);
-    }
-
-    private void createIngredientTable(SQLiteDatabase db) {
-        final String CREATE_STATEMENT = "CREATE TABLE " + IngredientEntry.TABLE_NAME + " (" +
-                IngredientEntry._ID + " INTEGER AUTOINCREMENT PRIMARY KEY, " +
-                IngredientEntry.COLUMN_NAME + " TEXT NOT NULL, " +
-                IngredientEntry.COLUMN_QUALITY + " INTEGER NOT NULL, " +
-                IngredientEntry.COLUMN_UNIT + " TEXT NOT NULL, " +
-                "FOREIGN KEY (" + IngredientEntry.COLUMN_RECIPE + ") " +
-                "REFERENCES " + RecipeEntry.TABLE_NAME + " (" + RecipeEntry._ID + "));";
-        db.execSQL(CREATE_STATEMENT);
-    }
-
-    private void createRecipeTable(SQLiteDatabase db) {
-        final String CREATE_STATEMENT = "CREATE TABLE " + RecipeEntry.TABLE_NAME + " (" +
-                RecipeEntry._ID + " INTEGER PRIMARY KEY," +
-                RecipeEntry.COLUMN_NAME + " TEXT NOT NULL," +
-                RecipeEntry.COLUMN_SERVINGS + " INTEGER NOT NULL," +
-                RecipeEntry.COLUMN_IMAGE_URL + " TEXT);";
-        db.execSQL(CREATE_STATEMENT);
+                StepEntry.COLUMN_THUMBNAIL_URL + " TEXT)");
     }
 
     @Override
-    public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
-
+    public void onUpgrade(SQLiteDatabase db, int i, int i1) {
+        db.execSQL("DROP TABLE IF EXISTS " + RecipeEntry.TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + IngredientEntry.TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + StepEntry.TABLE_NAME);
     }
 }
