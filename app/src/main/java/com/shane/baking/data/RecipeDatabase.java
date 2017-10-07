@@ -7,6 +7,7 @@ import android.content.Context;
 
 import com.shane.baking.data.dao.IngredientDao;
 import com.shane.baking.data.dao.RecipeDao;
+import com.shane.baking.data.dao.RecipesAndAllChildrenDao;
 import com.shane.baking.data.dao.StepDao;
 import com.shane.baking.models.Ingredient;
 import com.shane.baking.models.Recipe;
@@ -36,4 +37,5 @@ public abstract class RecipeDatabase extends RoomDatabase {
 
     public abstract StepDao stepDao();
 
+    public abstract RecipesAndAllChildrenDao recipesAndAllChildrenDao();
 }

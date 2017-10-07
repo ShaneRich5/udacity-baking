@@ -31,11 +31,14 @@
         <activity
             android:name=".ui.RecipeWidgetActivity"
             android:label="@string/title_activity_step"
-            android:theme="@style/AppTheme" />
+            android:theme="@style/AppTheme"
+            android:launchMode="singleInstance"/>
+
         <provider
             android:name=".data.RecipeProvider"
             android:authorities="com.shane.baking"
-            android:exported="false" />
+            android:exported="true" />
+
         <receiver android:name=".widget.RecipeWidgetProvider">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -45,6 +48,10 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/recipe_widget_info" />
         </receiver>
+
+        <service
+            android:name=".widget.RecipeWidgetService"
+            android:permission="android.permission.BIND_REMOTEVIEWS" />
     </application>
 
 </manifest>

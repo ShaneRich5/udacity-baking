@@ -26,8 +26,8 @@ public interface IngredientDao {
     List<Long> insertAll(List<Ingredient> ingredients);
 
     @Query("SELECT * FROM " + IngredientEntry.TABLE_NAME + " WHERE " +
-            IngredientEntry._ID + " = :recipeId")
-    Cursor selectById(long recipeId);
+            IngredientEntry.COLUMN_RECIPE + " = :recipeId")
+    Cursor selectAllByRecipeId(long recipeId);
 
     @Query("SELECT * FROM " + IngredientEntry.TABLE_NAME)
     Cursor selectAll();

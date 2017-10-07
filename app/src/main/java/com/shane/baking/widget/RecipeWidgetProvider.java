@@ -8,7 +8,7 @@ import android.content.Intent;
 import android.widget.RemoteViews;
 
 import com.shane.baking.R;
-import com.shane.baking.ui.MainActivity;
+import com.shane.baking.ui.RecipeWidgetActivity;
 import com.shane.baking.utils.Constants;
 
 
@@ -22,7 +22,7 @@ public class RecipeWidgetProvider extends AppWidgetProvider {
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.recipe_widget);
 
 
-        Intent editRecipeIntent = new Intent(context, MainActivity.class);
+        Intent editRecipeIntent = new Intent(context, RecipeWidgetActivity.class);
         editRecipeIntent.putExtra(Constants.WIDGET_ID, appWidgetId);
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, editRecipeIntent, 0);
         views.setOnClickPendingIntent(R.id.recipe_edit_image, pendingIntent);
@@ -37,11 +37,6 @@ public class RecipeWidgetProvider extends AppWidgetProvider {
         for (int appWidgetId : appWidgetIds) {
             updateAppWidget(context, appWidgetManager, appWidgetId);
         }
-    }
-
-    @Override
-    public void onReceive(Context context, Intent intent) {
-        super.onReceive(context, intent);
     }
 
     @Override

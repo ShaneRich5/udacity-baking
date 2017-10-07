@@ -23,4 +23,28 @@ public class RecipesAndAllChildren {
 
     @Relation(parentColumn = RecipeEntry._ID, entityColumn = IngredientEntry.COLUMN_RECIPE, entity = Ingredient.class)
     List<Ingredient> ingredients = new ArrayList<>();
+
+    public Recipe getRecipe() {
+        return recipe;
+    }
+
+    public void setRecipe(Recipe recipe) {
+        this.recipe = recipe;
+    }
+
+    public List<Step> getSteps() {
+        return steps;
+    }
+
+    public void setSteps(List<Step> steps) {
+        this.steps = steps;
+    }
+
+    public List<Ingredient> getIngredients() {
+        return ingredients;
+    }
+
+    public void setIngredients(List<Ingredient> ingredients) {
+        this.ingredients = ingredients;
+    }
 }

@@ -25,26 +25,28 @@ public class BrowseRecipesFragment extends RecipeListFragment {
     protected void loadRecipes() {
         RecipeApi recipeApi = RecipeApi.Factory.create();
         recipeApi.getRecipe().observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io())
-                .subscribe(new Observer<List<Recipe>>() {
-                    @Override
-                    public void onSubscribe(@NonNull Disposable d) {
-
-                    }
-
-                    @Override
-                    public void onNext(@NonNull List<Recipe> recipes) {
-                        addRecipesToAdapter(recipes);
-                    }
-
-                    @Override
-                    public void onError(@NonNull Throwable error) {
-                        Timber.e(error);
-                    }
-
-                    @Override
-                    public void onComplete() {
-
-                    }
-                });
+                .subscribe(recipeObserver);
     }
+
+    Observer<List<Recipe>> recipeObserver = new Observer<List<Recipe>>() {
+        @Override
+        public void onSubscribe(@NonNull Disposable d) {
+
+        }
+
+        @Override
+        public void onNext(@NonNull List<Recipe> recipes) {
+            addRecipesToAdapter(recipes);
+        }
+
+        @Override
+        public void onError(@NonNull Throwable error) {
+            Timber.e(error);
+        }
+
+        @Override
+        public void onComplete() {
+
+        }
+    };
 }

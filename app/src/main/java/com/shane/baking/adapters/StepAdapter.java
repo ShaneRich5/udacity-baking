@@ -18,7 +18,6 @@ import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import timber.log.Timber;
 
 /**
  * Created by Shane on 9/30/2017.
@@ -39,8 +38,6 @@ public class StepAdapter extends RecyclerView.Adapter<StepAdapter.StepViewHolder
         this.context = context;
         this.clickHandler = clickHandler;
         this.steps = steps;
-
-        Timber.i(steps.toString());
     }
 
     @Override

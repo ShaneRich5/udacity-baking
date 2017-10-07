@@ -4,7 +4,6 @@ import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
-import android.arch.persistence.room.Relation;
 import android.content.ContentValues;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -13,7 +12,6 @@ import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.reflect.TypeToken;
 import com.shane.baking.data.RecipeContract.RecipeEntry;
-import com.shane.baking.data.RecipeContract.StepEntry;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +36,7 @@ public class Recipe implements Parcelable {
     @SerializedName("image")
     private String imageUrl;
 
-    @Relation(parentColumn = RecipeEntry._ID, entityColumn = StepEntry.COLUMN_RECIPE )
+    @Ignore
     private List<Step> steps = new ArrayList<>();
 
     @Ignore

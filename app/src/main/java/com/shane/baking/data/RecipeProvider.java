@@ -19,6 +19,8 @@ import com.shane.baking.models.Ingredient;
 import com.shane.baking.models.Recipe;
 import com.shane.baking.models.Step;
 
+import timber.log.Timber;
+
 public class RecipeProvider extends ContentProvider {
     private static final int RECIPE = 100;
     private static final int RECIPE_ID = 101;
@@ -70,6 +72,9 @@ public class RecipeProvider extends ContentProvider {
                 stepDao.insertAll(recipe.getSteps());
                 ingredientDao.insertAll(recipe.getIngredients());
 
+                Timber.tag(RecipeProvider.class.getName()).i(recipe.getIngredients().toString());
+                Timber.tag(RecipeProvider.class.getName()).i(recipe.getSteps().toString());
+
                 context.getContentResolver().notifyChange(uri, null);
                 return ContentUris.withAppendedId(uri, id);
             default:
@@ -117,7 +122,7 @@ public class RecipeProvider extends ContentProvider {
                 cursor = ingredientDao.selectAll();
                 break;
             case INGREDIENT_ID:
-                cursor = ingredientDao.selectById(ContentUris.parseId(uri));
+                cursor = ingredientDao.selectAllByRecipeId(ContentUris.parseId(uri));
                 break;
             case STEP:
                 cursor = stepDao.selectAll();

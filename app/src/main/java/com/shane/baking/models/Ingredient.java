@@ -42,6 +42,14 @@ public class Ingredient implements Parcelable {
 
     public Ingredient() {}
 
+    @Ignore
+    public Ingredient(long id, String name, double quantity, String unit) {
+        this.id = id;
+        this.name = name;
+        this.quantity = quantity;
+        this.unit = unit;
+    }
+
     public long getId() {
         return id;
     }
@@ -82,6 +90,17 @@ public class Ingredient implements Parcelable {
         this.recipeId = recipeId;
     }
 
+    @Override
+    public String toString() {
+        return "Ingredient{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", unit='" + unit + '\'' +
+                ", quantity=" + quantity +
+                ", recipeId=" + recipeId +
+                '}';
+    }
+
     @Ignore
     protected Ingredient(Parcel in) {
         id = in.readLong();
@@ -118,6 +137,6 @@ public class Ingredient implements Parcelable {
     }
 
     public static Ingredient fromContentValues(ContentValues values) {
-        return null;
+        return new Ingredient();
     }
 }
