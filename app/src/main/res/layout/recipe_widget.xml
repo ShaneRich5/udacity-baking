@@ -10,30 +10,30 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/accent"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:padding="@dimen/view_padding">
 
         <TextView
             android:id="@+id/recipe_name_text"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:textColor="#ffffff"
-            android:textSize="24sp"
-            android:text="Testing"
-            android:textStyle="bold"/>
+            android:layout_weight="1"
+            android:text="@string/message_no_recipe_selected"
+            style="@style/AppTheme.WidgetTitle"/>
 
 
         <ImageView
             android:id="@+id/recipe_edit_image"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
             android:src="@drawable/ic_edit_white_24dp"
-            android:contentDescription="Edit recipe button"/>
+            android:contentDescription="@string/description_edit_recipe_image"/>
 
     </LinearLayout>
 
-    <ListView
-        android:id="@+id/ingredient_list"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
-
+        <ListView
+            android:id="@+id/ingredient_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
 </LinearLayout>
