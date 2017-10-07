@@ -4,6 +4,7 @@ import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -160,12 +161,18 @@ public class RecipeDetailFragment extends Fragment implements StepAdapter.OnClic
                 if (isBookmarked) {
                     contentResolver.delete(RecipeEntry.buildRecipeUri(recipe.getId()), null, null);
                 } else {
-                    ContentValues contentValues = new Recipe.Builder().build(recipe);
-                    contentResolver.insert(RecipeEntry.CONTENT_URI, contentValues);
+                    ContentValues recipeContentValues = new Recipe.Builder().build(recipe);
+                    contentResolver.insert(RecipeEntry.CONTENT_URI, recipeContentValues);
                 }
 
                 emitter.onNext( ! isBookmarked);
             });
+        })
+        .concatWith(new Observable<Boolean>() {
+            @Override
+            protected void subscribeActual(Observer<? super Boolean> observer) {
+
+            }
         })
         .observeOn(AndroidSchedulers.mainThread())
         .subscribeOn(Schedulers.io())
@@ -177,7 +184,10 @@ public class RecipeDetailFragment extends Fragment implements StepAdapter.OnClic
             Cursor cursor = getContext().getContentResolver()
                     .query(RecipeEntry.buildRecipeUri(recipe.getId()), null, null, null, null);
             emitter.onNext(cursor != null && cursor.getCount() > 0);
-            if (cursor != null) cursor.close();
+            if (cursor != null) {
+                DatabaseUtils.dumpCursor(cursor);
+                cursor.close();
+            }
         });
     }
 

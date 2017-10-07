@@ -4,12 +4,16 @@ import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
+import android.arch.persistence.room.Relation;
 import android.content.ContentValues;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
+import com.google.gson.reflect.TypeToken;
 import com.shane.baking.data.RecipeContract.RecipeEntry;
+import com.shane.baking.data.RecipeContract.StepEntry;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +38,7 @@ public class Recipe implements Parcelable {
     @SerializedName("image")
     private String imageUrl;
 
-    @Ignore
+    @Relation(parentColumn = RecipeEntry._ID, entityColumn = StepEntry.COLUMN_RECIPE )
     private List<Step> steps = new ArrayList<>();
 
     @Ignore
@@ -150,8 +154,18 @@ public class Recipe implements Parcelable {
             return this;
         }
 
-        public Builder imageUrl (String imageUrl) {
+        public Builder imageUrl(String imageUrl) {
             values.put(RecipeEntry.COLUMN_IMAGE_URL, imageUrl);
+            return this;
+        }
+
+        public Builder steps(List<Step> steps) {
+            values.put(RecipeEntry.COLUMN_STEPS, new Gson().toJson(steps));
+            return this;
+        }
+
+        public Builder ingredients(List<Ingredient> ingredients) {
+            values.put(RecipeEntry.COLUMN_INGREDIENTS, new Gson().toJson(ingredients));
             return this;
         }
 
@@ -164,16 +178,23 @@ public class Recipe implements Parcelable {
             name(recipe.name);
             servings(recipe.servings);
             imageUrl(recipe.imageUrl);
+            steps(recipe.steps);
+            ingredients(recipe.ingredients);
             return build();
         }
     }
 
     public static Recipe fromContentValues(ContentValues values) {
+        Gson gson = new Gson();
         Recipe recipe = new Recipe();
-        recipe.setId(values.getAsShort(RecipeEntry._ID));
-        recipe.setName(values.getAsString(RecipeEntry.COLUMN_NAME));
-        recipe.setServings(values.getAsInteger(RecipeEntry.COLUMN_SERVINGS));
-        recipe.setImageUrl(values.getAsString(RecipeEntry.COLUMN_IMAGE_URL));
+        recipe.id = values.getAsShort(RecipeEntry._ID);
+        recipe.name = values.getAsString(RecipeEntry.COLUMN_NAME);
+        recipe.servings = values.getAsInteger(RecipeEntry.COLUMN_SERVINGS);
+        recipe.imageUrl = values.getAsString(RecipeEntry.COLUMN_IMAGE_URL);
+        recipe.steps = gson.fromJson(values.getAsString(RecipeEntry.COLUMN_STEPS),
+                new TypeToken<List<Step>>() {}.getType());
+        recipe.ingredients = gson.fromJson(values.getAsString(RecipeEntry.COLUMN_INGREDIENTS),
+                new TypeToken<List<Ingredient>>() {}.getType());
         return recipe;
     }
 }

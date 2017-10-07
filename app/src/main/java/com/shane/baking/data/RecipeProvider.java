@@ -63,6 +63,13 @@ public class RecipeProvider extends ContentProvider {
             case RECIPE:
                 Recipe recipe = Recipe.fromContentValues(values);
                 final long id = recipeDao.insert(recipe);
+
+                recipe.getSteps().forEach(step -> step.setRecipeId(recipe.getId()));
+                recipe.getIngredients().forEach(ingredient -> ingredient.setRecipeId(recipe.getId()));
+
+                stepDao.insertAll(recipe.getSteps());
+                ingredientDao.insertAll(recipe.getIngredients());
+
                 context.getContentResolver().notifyChange(uri, null);
                 return ContentUris.withAppendedId(uri, id);
             default:
@@ -91,6 +98,8 @@ public class RecipeProvider extends ContentProvider {
         if (numberOfRowsDeleted != 0) notifyChange(uri);
         return numberOfRowsDeleted;
     }
+
+
 
     @Override
     public Cursor query(@NonNull Uri uri, String[] projection, String selection,

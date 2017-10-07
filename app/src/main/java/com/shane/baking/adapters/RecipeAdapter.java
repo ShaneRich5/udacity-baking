@@ -1,7 +1,6 @@
 package com.shane.baking.adapters;
 
 import android.content.Context;
-import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -11,8 +10,6 @@ import android.widget.TextView;
 
 import com.shane.baking.R;
 import com.shane.baking.models.Recipe;
-import com.shane.baking.ui.RecipeDetailActivity;
-import com.shane.baking.utils.Constants;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,11 +23,17 @@ import butterknife.ButterKnife;
 
 public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeViewHolder> {
 
-    private Context context;
+    private final Context context;
+    private final OnClickHandler clickHandler;
     private List<Recipe> recipes = new ArrayList<>();
 
-    public RecipeAdapter(@NonNull Context context) {
+    public interface OnClickHandler {
+        void onClick(Recipe recipe);
+    }
+
+    public RecipeAdapter(@NonNull Context context, @NonNull OnClickHandler clickHandler) {
         this.context = context;
+        this.clickHandler = clickHandler;
     }
 
     @Override
@@ -77,10 +80,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
         public void onClick(View view) {
             int index = getAdapterPosition();
             Recipe recipe = recipes.get(index);
-
-            Intent intent = new Intent(context, RecipeDetailActivity.class);
-            intent.putExtra(Constants.EXTRA_RECIPE, recipe);
-            context.startActivity(intent);
+            clickHandler.onClick(recipe);
         }
     }
 }

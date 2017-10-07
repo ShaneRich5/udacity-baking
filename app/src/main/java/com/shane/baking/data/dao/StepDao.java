@@ -23,7 +23,7 @@ public interface StepDao {
     long insert(Step step);
 
     @Insert
-    List<Long> insertAll(Step... step);
+    List<Long> insertAll(List<Step> step);
 
     @Query("SELECT * FROM " + StepEntry.TABLE_NAME)
     Cursor selectAll();

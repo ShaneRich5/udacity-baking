@@ -35,6 +35,8 @@ public class RecipeContract {
         public static final String COLUMN_NAME = "name";
         public static final String COLUMN_SERVINGS = "servings";
         public static final String COLUMN_IMAGE_URL = "image_url";
+        public static final String COLUMN_STEPS = "steps";
+        public static final String COLUMN_INGREDIENTS = "ingredients";
 
         public static Uri buildRecipeUri(long id) {
             return ContentUris.withAppendedId(CONTENT_URI, id);

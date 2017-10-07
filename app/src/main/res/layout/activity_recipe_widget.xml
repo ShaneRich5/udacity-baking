@@ -12,5 +12,5 @@
         android:id="@+id/fragment_recipe_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:name="com.shane.baking.ui.BrowseRecipesFragment" />
+        android:name="com.shane.baking.ui.BookmarkRecipesFragment" />
 </LinearLayout>

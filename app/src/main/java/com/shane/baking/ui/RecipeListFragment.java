@@ -12,24 +12,17 @@ import android.view.ViewGroup;
 import com.shane.baking.R;
 import com.shane.baking.adapters.RecipeAdapter;
 import com.shane.baking.models.Recipe;
-import com.shane.baking.network.RecipeApi;
 
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import io.reactivex.Observer;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.annotations.NonNull;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
-import timber.log.Timber;
 
 /**
  * Created by Shane on 9/29/2017.
  */
 
-public class RecipeListFragment extends Fragment {
+public abstract class RecipeListFragment extends Fragment {
     public static final String TAG = RecipeListFragment.class.getName();
 
     @BindView(R.id.recycler_recipe) RecyclerView recipeRecyclerView;
@@ -53,35 +46,23 @@ public class RecipeListFragment extends Fragment {
         final int NUM_OF_GRID_COLUMNS = getResources().getInteger(R.integer.recipe_grid_column_count);
         final int PIXEL_GRID_SPACING = 10;
 
-        recipeAdapter = new RecipeAdapter(getContext());
+        if (!(getActivity() instanceof RecipeAdapter.OnClickHandler)) {
+            throw new ClassCastException("Activity must implement RecipeAdapter.OnClickHandler");
+        }
+
+        recipeAdapter = new RecipeAdapter(getContext(), (RecipeAdapter.OnClickHandler) getActivity());
 
         recipeRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), NUM_OF_GRID_COLUMNS));
         recipeRecyclerView.addItemDecoration(new GridSpaceItemDecoration(PIXEL_GRID_SPACING));
         recipeRecyclerView.setHasFixedSize(true);
         recipeRecyclerView.setAdapter(recipeAdapter);
 
-        RecipeApi recipeApi = RecipeApi.Factory.create();
-        recipeApi.getRecipe().observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io())
-                .subscribe(new Observer<List<Recipe>>() {
-                    @Override
-                    public void onSubscribe(@NonNull Disposable d) {
-
-                    }
-
-                    @Override
-                    public void onNext(@NonNull List<Recipe> recipes) {
-                        recipeAdapter.setRecipes(recipes);
-                    }
-
-                    @Override
-                    public void onError(@NonNull Throwable error) {
-                        Timber.e(error);
-                    }
-
-                    @Override
-                    public void onComplete() {
-
-                    }
-                });
+        loadRecipes();
     }
+
+    protected void addRecipesToAdapter(List<Recipe> recipes) {
+        recipeAdapter.setRecipes(recipes);
+    }
+
+    protected abstract void loadRecipes();
 }

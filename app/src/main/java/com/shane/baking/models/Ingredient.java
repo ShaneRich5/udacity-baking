@@ -23,7 +23,7 @@ import com.shane.baking.data.RecipeContract.IngredientEntry;
                 childColumns = IngredientEntry.COLUMN_RECIPE))
 public class Ingredient implements Parcelable {
     @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = IngredientEntry._ID)
+    @ColumnInfo(name = IngredientEntry._ID, index = true)
     private long id;
 
     @ColumnInfo(name = IngredientEntry.COLUMN_NAME)

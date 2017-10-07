@@ -23,7 +23,7 @@ public interface IngredientDao {
     long insert(Ingredient ingredient);
 
     @Insert(onConflict = REPLACE)
-    List<Long> insertAll(Ingredient[] ingredients);
+    List<Long> insertAll(List<Ingredient> ingredients);
 
     @Query("SELECT * FROM " + IngredientEntry.TABLE_NAME + " WHERE " +
             IngredientEntry._ID + " = :recipeId")
