@@ -15,7 +15,7 @@ import com.shane.baking.utils.Constants;
 public class RecipeWidgetProvider extends AppWidgetProvider {
 
 
-    static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
+    void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
                                 int appWidgetId) {
 
         // Construct the RemoteViews object
@@ -24,7 +24,7 @@ public class RecipeWidgetProvider extends AppWidgetProvider {
 
         Intent editRecipeIntent = new Intent(context, RecipeWidgetActivity.class);
         editRecipeIntent.putExtra(Constants.WIDGET_ID, appWidgetId);
-        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, editRecipeIntent, 0);
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, appWidgetId, editRecipeIntent, 0);
         views.setOnClickPendingIntent(R.id.recipe_edit_image, pendingIntent);
 
         // Instruct the widget manager to update the widget

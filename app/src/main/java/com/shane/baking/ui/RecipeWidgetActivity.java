@@ -1,6 +1,7 @@
 package com.shane.baking.ui;
 
 import android.appwidget.AppWidgetManager;
+import android.content.ComponentName;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -16,10 +17,14 @@ import com.shane.baking.adapters.RecipeAdapter;
 import com.shane.baking.data.RecipeContract;
 import com.shane.baking.models.Recipe;
 import com.shane.baking.utils.Constants;
+import com.shane.baking.widget.RecipeWidgetProvider;
 import com.shane.baking.widget.RecipeWidgetService;
+
+import java.util.Arrays;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import timber.log.Timber;
 
 /**
  * Created by Shane on 10/7/2017.
@@ -60,12 +65,15 @@ public class RecipeWidgetActivity extends AppCompatActivity implements RecipeAda
     @Override
     public void onClick(Recipe recipe) {
         Intent startIntent = getIntent();
-
-        int widgetId = startIntent.getIntExtra(Constants.WIDGET_ID, 0);
+        int currentWidgetId = startIntent.getIntExtra(Constants.WIDGET_ID, 0);
 
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(RecipeWidgetActivity.this);
         RemoteViews remoteViews = new RemoteViews(RecipeWidgetActivity.this.getPackageName(), R.layout.recipe_widget);
-//        ComponentName recipeWidget = new ComponentName(RecipeWidgetActivity.this, RecipeWidgetProvider.class);
+        ComponentName recipeWidget = new ComponentName(RecipeWidgetActivity.this, RecipeWidgetProvider.class);
+
+        int[] widgetIds = appWidgetManager.getAppWidgetIds(recipeWidget);
+
+        Timber.i("Recipe id: %s, All ids: %s", currentWidgetId, Arrays.toString(widgetIds));
 
         remoteViews.setTextViewText(R.id.recipe_name_text, recipe.getName());
 
@@ -80,7 +88,7 @@ public class RecipeWidgetActivity extends AppCompatActivity implements RecipeAda
 //        PendingIntent recipePendingIntent = PendingIntent.getActivity(this, 0, recipeIntent, 0);
 //        remoteViews.setOnClickPendingIntent(R.id.ingredient_list, recipePendingIntent);
 
-        appWidgetManager.updateAppWidget(widgetId, remoteViews);
+        appWidgetManager.updateAppWidget(currentWidgetId, remoteViews);
         finish();
     }
 }
