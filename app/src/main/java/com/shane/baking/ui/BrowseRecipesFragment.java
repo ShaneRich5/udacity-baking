@@ -1,16 +1,13 @@
 package com.shane.baking.ui;
 
-import com.shane.baking.models.Recipe;
+import android.view.View;
+
+import com.shane.baking.R;
 import com.shane.baking.network.RecipeApi;
 
-import java.util.List;
-
-import io.reactivex.Observer;
+import butterknife.OnClick;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.annotations.NonNull;
-import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
-import timber.log.Timber;
 
 /**
  * Created by Shane on 10/6/2017.
@@ -30,25 +27,8 @@ public class BrowseRecipesFragment extends RecipeListFragment {
                 .subscribe(recipeObserver);
     }
 
-    Observer<List<Recipe>> recipeObserver = new Observer<List<Recipe>>() {
-        @Override
-        public void onSubscribe(@NonNull Disposable d) {
-
-        }
-
-        @Override
-        public void onNext(@NonNull List<Recipe> recipes) {
-            addRecipesToAdapter(recipes);
-        }
-
-        @Override
-        public void onError(@NonNull Throwable error) {
-            Timber.e(error);
-        }
-
-        @Override
-        public void onComplete() {
-
-        }
-    };
+    @OnClick(R.id.error_button)
+    public void onErrorButtonClick(View view) {
+        loadRecipes();
+    }
 }
