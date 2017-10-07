@@ -24,7 +24,9 @@ public class BrowseRecipesFragment extends RecipeListFragment {
     @Override
     protected void loadRecipes() {
         RecipeApi recipeApi = RecipeApi.Factory.create();
-        recipeApi.getRecipe().observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io())
+        recipeApi.getRecipe()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
                 .subscribe(recipeObserver);
     }
 

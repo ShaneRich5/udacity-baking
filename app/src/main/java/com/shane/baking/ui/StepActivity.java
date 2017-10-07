@@ -23,6 +23,7 @@ import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import timber.log.Timber;
 
 public class StepActivity extends AppCompatActivity {
 
@@ -62,8 +63,9 @@ public class StepActivity extends AppCompatActivity {
         viewPager.setAdapter(sectionsPagerAdapter);
 
         if (getIntent().hasExtra(Constants.EXTRA_STEP_ID)) {
-            int currentPosition = getIntent().getIntExtra(Constants.EXTRA_STEP_ID, 0);
-            viewPager.setCurrentItem(currentPosition, true);
+            long currentPosition = getIntent().getLongExtra(Constants.EXTRA_STEP_ID, 0);
+            Timber.i("current position: %d", currentPosition);
+            viewPager.setCurrentItem((int) currentPosition, true);
         }
 
         tabLayout.setupWithViewPager(viewPager);

@@ -20,6 +20,7 @@ import com.shane.baking.utils.Constants;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import timber.log.Timber;
 
 import static com.shane.baking.utils.Constants.EXTRA_RECIPE;
 
@@ -84,6 +85,7 @@ public class RecipeDetailActivity extends AppCompatActivity
 
     @Override
     public void onStepSelected(Step step) {
+        Timber.i(step.toString());
         if (fragmentDetailContainer == null) {
             Intent stepIntent = new Intent(this, StepActivity.class);
             stepIntent.putExtra(Constants.EXTRA_RECIPE, recipe);

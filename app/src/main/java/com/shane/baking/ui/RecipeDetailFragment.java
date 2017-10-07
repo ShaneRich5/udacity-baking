@@ -183,11 +183,12 @@ public class RecipeDetailFragment extends Fragment implements StepAdapter.OnClic
         return Observable.create(emitter -> {
             Cursor cursor = getContext().getContentResolver()
                     .query(RecipeEntry.buildRecipeUri(recipe.getId()), null, null, null, null);
-            emitter.onNext(cursor != null && cursor.getCount() > 0);
+            boolean isBookmarked = cursor != null && cursor.getCount() > 0;
             if (cursor != null) {
                 DatabaseUtils.dumpCursor(cursor);
                 cursor.close();
             }
+            emitter.onNext(isBookmarked);
         });
     }
 

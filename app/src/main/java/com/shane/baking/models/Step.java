@@ -12,7 +12,7 @@ import com.google.gson.annotations.SerializedName;
 import com.shane.baking.data.RecipeContract.RecipeEntry;
 import com.shane.baking.data.RecipeContract.StepEntry;
 
-import java.util.Locale;
+import static android.arch.persistence.room.ForeignKey.CASCADE;
 
 /**
  * Created by Shane on 9/29/2017.
@@ -21,7 +21,8 @@ import java.util.Locale;
         primaryKeys = {StepEntry._ID, StepEntry.COLUMN_RECIPE},
         foreignKeys = @ForeignKey(entity = Recipe.class,
                 parentColumns = RecipeEntry._ID,
-                childColumns = StepEntry.COLUMN_RECIPE))
+                childColumns = StepEntry.COLUMN_RECIPE,
+                onDelete = CASCADE))
 public class Step implements Parcelable {
     @ColumnInfo(name = StepEntry._ID)
     private long id;
@@ -133,9 +134,14 @@ public class Step implements Parcelable {
 
     @Override
     public String toString() {
-        return String.format(Locale.getDefault(),
-                "Summary: {id: %d, summary: %s, description: %s, videoUrl: %s, thumbnailUrl: %s}",
-                id, summary, description, videoUrl, thumbnailUrl);
+        return "Step{" +
+                "id=" + id +
+                ", summary='" + summary + '\'' +
+                ", description='" + description + '\'' +
+                ", videoUrl='" + videoUrl + '\'' +
+                ", thumbnailUrl='" + thumbnailUrl + '\'' +
+                ", recipeId=" + recipeId +
+                '}';
     }
 
     public static Step fromContentValues(ContentValues values) {

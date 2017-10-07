@@ -13,6 +13,8 @@ import com.google.gson.annotations.SerializedName;
 import com.shane.baking.data.RecipeContract;
 import com.shane.baking.data.RecipeContract.IngredientEntry;
 
+import static android.arch.persistence.room.ForeignKey.CASCADE;
+
 
 /**
  * Created by Shane on 9/29/2017.
@@ -20,7 +22,8 @@ import com.shane.baking.data.RecipeContract.IngredientEntry;
 @Entity(tableName = IngredientEntry.TABLE_NAME,
         foreignKeys = @ForeignKey(entity = Recipe.class,
                 parentColumns = RecipeContract.RecipeEntry._ID,
-                childColumns = IngredientEntry.COLUMN_RECIPE))
+                childColumns = IngredientEntry.COLUMN_RECIPE,
+                onDelete = CASCADE))
 public class Ingredient implements Parcelable {
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = IngredientEntry._ID, index = true)
