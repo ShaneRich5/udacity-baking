@@ -23,4 +23,23 @@
         <item name="android:textStyle">bold</item>
     </style>
 
+    <style name="AppTheme.CardListItem">
+        <item name="android:paddingTop">8dp</item>
+        <item name="android:paddingBottom">8dp</item>
+        <item name="android:paddingLeft">16dp</item>
+        <item name="android:paddingRight">16dp</item>
+        <item name="android:paddingStart">16dp</item>
+        <item name="android:paddingEnd">16dp</item>
+        <item name="android:textSize">13sp</item>
+    </style>
+
+    <style name="AppTheme.CardListHeader">
+        <item name="android:textSize">21sp</item>
+        <item name="android:layout_marginLeft">16dp</item>
+        <item name="android:layout_marginStart">16dp</item>
+        <item name="android:layout_marginTop">8dp</item>
+        <item name="android:layout_marginBottom">8dp</item>
+        <item name="android:textAppearance">?android:attr/textAppearanceSmall</item>
+    </style>
+
 </resources>
