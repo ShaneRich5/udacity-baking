@@ -45,6 +45,10 @@ public abstract class RecipeListFragment extends Fragment {
 
     private RecipeAdapter recipeAdapter;
 
+    interface InteractionListener {
+        void onIdleStatusUpdate(boolean status);
+    }
+
     public RecipeListFragment() {}
 
     @Nullable
@@ -90,6 +94,9 @@ public abstract class RecipeListFragment extends Fragment {
         @Override
         public void onSubscribe(@NonNull Disposable d) {
             showLoading();
+            if (getContext() instanceof InteractionListener) {
+                ((InteractionListener) getContext()).onIdleStatusUpdate(true);
+            }
         }
 
         @Override
@@ -106,6 +113,9 @@ public abstract class RecipeListFragment extends Fragment {
         @Override
         public void onComplete() {
             progressBar.setVisibility(View.GONE);
+            if (getContext() instanceof InteractionListener) {
+                ((InteractionListener) getContext()).onIdleStatusUpdate(false);
+            }
         }
     };
 

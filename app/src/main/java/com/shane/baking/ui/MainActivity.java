@@ -18,7 +18,8 @@ import com.shane.baking.utils.SimpleIdlingResource;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class MainActivity extends AppCompatActivity implements RecipeAdapter.OnClickHandler {
+public class MainActivity extends AppCompatActivity
+        implements RecipeAdapter.OnClickHandler, RecipeListFragment.InteractionListener {
 
     @BindView(R.id.toolbar) Toolbar toolbar;
 
@@ -47,5 +48,11 @@ public class MainActivity extends AppCompatActivity implements RecipeAdapter.OnC
         Intent intent = new Intent(this, RecipeDetailActivity.class);
         intent.putExtra(Constants.EXTRA_RECIPE, recipe);
         startActivity(intent);
+    }
+
+    @Override
+    public void onIdleStatusUpdate(boolean status) {
+        if (idlingResource != null)
+            idlingResource.setIdleState(status);
     }
 }

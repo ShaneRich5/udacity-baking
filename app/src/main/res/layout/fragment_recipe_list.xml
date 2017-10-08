@@ -9,7 +9,7 @@
         android:id="@+id/recycler_recipe"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:visibility="gone"/>
+        tools:visibility="visible"/>
 
     <ProgressBar
         android:id="@+id/progress_bar"
@@ -26,8 +26,7 @@
         android:orientation="vertical"
         android:background="@color/primary_light"
         android:visibility="gone"
-        android:gravity="center"
-        tools:visibility="visible">
+        android:gravity="center">
 
         <ImageView
             android:id="@+id/error_image"
