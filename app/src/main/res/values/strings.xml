@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Baked</string>
-    <string name="title_activity_recipe_detail">RecipeDetailActivity</string>
-    <string name="title_activity_step">StepActivity</string>
+    <string name="title_activity_recipe_detail">Recipe</string>
+    <string name="title_activity_step">Steps</string>
     <string name="section_format">Hello World from section: %1$d</string>
 
     <string name="ingredient_item">%1$s %2$s of %3$s</string>
