@@ -89,7 +89,7 @@ public class RecipeDetailActivity extends AppCompatActivity
         if (fragmentDetailContainer == null) {
             Intent stepIntent = new Intent(this, StepActivity.class);
             stepIntent.putExtra(Constants.EXTRA_RECIPE, recipe);
-            stepIntent.putExtra(Constants.EXTRA_STEP_ID, step.getId());
+            stepIntent.putExtra(Constants.EXTRA_STEP_ID, step.getNumber());
             startActivity(stepIntent);
         } else {
             StepFragment stepFragment = StepFragment.newInstance(step);

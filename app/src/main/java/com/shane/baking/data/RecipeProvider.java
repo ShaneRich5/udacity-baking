@@ -6,20 +6,15 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.UriMatcher;
 import android.database.Cursor;
+import android.database.SQLException;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 
 import com.shane.baking.data.RecipeContract.IngredientEntry;
 import com.shane.baking.data.RecipeContract.RecipeEntry;
 import com.shane.baking.data.RecipeContract.StepEntry;
-import com.shane.baking.data.dao.IngredientDao;
-import com.shane.baking.data.dao.RecipeDao;
-import com.shane.baking.data.dao.StepDao;
-import com.shane.baking.models.Ingredient;
 import com.shane.baking.models.Recipe;
-import com.shane.baking.models.Step;
-
-import timber.log.Timber;
 
 public class RecipeProvider extends ContentProvider {
     private static final int RECIPE = 100;
@@ -32,9 +27,8 @@ public class RecipeProvider extends ContentProvider {
     private static final UriMatcher URI_MATCHER = new UriMatcher(UriMatcher.NO_MATCH);
 
     private Context context;
-    private StepDao stepDao;
-    private RecipeDao recipeDao;
-    private IngredientDao ingredientDao;
+
+    private RecipeDbHelper recipeDbHelper;
 
     static {
         final String authority = RecipeContract.CONTENT_AUTHORITY;
@@ -53,48 +47,96 @@ public class RecipeProvider extends ContentProvider {
     public boolean onCreate() {
         context = getContext();
         if (context == null) return false;
-        recipeDao = RecipeDatabase.getInstance(context).recipeDao();
-        ingredientDao = RecipeDatabase.getInstance(context).ingredientDao();
-        stepDao = RecipeDatabase.getInstance(context).stepDao();
+        recipeDbHelper = new RecipeDbHelper(getContext());
         return true;
     }
 
+
     @Override
     public Uri insert(@NonNull Uri uri, ContentValues values) {
+        final SQLiteDatabase database = recipeDbHelper.getWritableDatabase();
+        long id;
+        Uri returnUri;
+
         switch (URI_MATCHER.match(uri)) {
             case RECIPE:
                 Recipe recipe = Recipe.fromContentValues(values);
-                final long id = recipeDao.insert(recipe);
 
-                recipe.getSteps().forEach(step -> step.setRecipeId(recipe.getId()));
-                recipe.getIngredients().forEach(ingredient -> ingredient.setRecipeId(recipe.getId()));
+                values.remove(RecipeEntry.COLUMN_STEPS);
+                values.remove(RecipeEntry.COLUMN_INGREDIENTS);
 
-                stepDao.insertAll(recipe.getSteps());
-                ingredientDao.insertAll(recipe.getIngredients());
+                id = database.insert(RecipeEntry.TABLE_NAME, null, values);
 
-                Timber.tag(RecipeProvider.class.getName()).i(recipe.getIngredients().toString());
-                Timber.tag(RecipeProvider.class.getName()).i(recipe.getSteps().toString());
+                recipe.getIngredients().forEach(ingredient -> {
+                    ingredient.setRecipeId(recipe.getId());
+                    insert(IngredientEntry.CONTENT_URI, ingredient.toContentValues());
+                });
 
-                context.getContentResolver().notifyChange(uri, null);
-                return ContentUris.withAppendedId(uri, id);
+                recipe.getSteps().forEach(step -> {
+                    step.setRecipeId(recipe.getId());
+                    insert(StepEntry.CONTENT_URI, step.toContentValues());
+                });
+
+                if (id > 0) {
+                    returnUri = RecipeEntry.buildRecipeUri(id);
+                } else {
+                    throw new SQLException("Unable to insert rows into: " + uri);
+                }
+                break;
+            case INGREDIENT:
+                id = database.insert(IngredientEntry.TABLE_NAME, null, values);
+                if (id > 0) {
+                    returnUri = IngredientEntry.buildIngredientUri(id);
+                } else {
+                    throw new SQLException("Unable to insert rows into: " + uri);
+                }
+                break;
+            case STEP:
+                id = database.insert(StepEntry.TABLE_NAME, null, values);
+                if (id > 0) {
+                    returnUri = StepEntry.buildStepUri(id);
+                } else {
+                    throw new SQLException("Unable to insert rows into: " + uri);
+                }
+                break;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
+
+        notifyChange(uri);
+        return returnUri;
     }
 
     @Override
     public int delete(@NonNull Uri uri, String selection, String[] arguments) {
+        final SQLiteDatabase database = recipeDbHelper.getWritableDatabase();
         int numberOfRowsDeleted;
 
+        if (null == selection) selection = "1";
+
         switch (URI_MATCHER.match(uri)) {
+            case RECIPE:
+                numberOfRowsDeleted = database.delete(RecipeEntry.TABLE_NAME, selection, arguments);
+                break;
             case RECIPE_ID:
-                numberOfRowsDeleted = recipeDao.deleteById(ContentUris.parseId(uri));
+                String recipeId = uri.getPathSegments().get(1);
+                numberOfRowsDeleted = database.delete(RecipeEntry.TABLE_NAME, RecipeEntry._ID + "=?", new String[]{recipeId});
+                delete(IngredientEntry.buildIngredientUri(ContentUris.parseId(uri)), null, null);
+                delete(StepEntry.buildStepUri(ContentUris.parseId(uri)), null, null);
+                break;
+            case INGREDIENT:
+                numberOfRowsDeleted = database.delete(IngredientEntry.TABLE_NAME, selection, arguments);
                 break;
             case INGREDIENT_ID:
-                numberOfRowsDeleted = ingredientDao.deleteByRecipeId(ContentUris.parseId(uri));
+                String ingredientId = uri.getPathSegments().get(1);
+                numberOfRowsDeleted = database.delete(IngredientEntry.TABLE_NAME, IngredientEntry.COLUMN_RECIPE + "=?", new String[]{ingredientId});
+                break;
+            case STEP:
+                numberOfRowsDeleted = database.delete(StepEntry.TABLE_NAME, selection, arguments);
                 break;
             case STEP_ID:
-                numberOfRowsDeleted = stepDao.deleteByRecipeId(ContentUris.parseId(uri));
+                String stepId = uri.getPathSegments().get(1);
+                numberOfRowsDeleted = database.delete(StepEntry.TABLE_NAME, StepEntry.COLUMN_RECIPE + "=?", new String[]{stepId});
                 break;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
@@ -102,70 +144,6 @@ public class RecipeProvider extends ContentProvider {
 
         if (numberOfRowsDeleted != 0) notifyChange(uri);
         return numberOfRowsDeleted;
-    }
-
-
-
-    @Override
-    public Cursor query(@NonNull Uri uri, String[] projection, String selection,
-                        String[] selectionArguments, String sortOrder) {
-        Cursor cursor;
-
-        switch (URI_MATCHER.match(uri)) {
-            case RECIPE:
-                cursor = recipeDao.selectAll();
-                break;
-            case RECIPE_ID:
-                cursor = recipeDao.selectById(ContentUris.parseId(uri));
-                break;
-            case INGREDIENT:
-                cursor = ingredientDao.selectAll();
-                break;
-            case INGREDIENT_ID:
-                cursor = ingredientDao.selectAllByRecipeId(ContentUris.parseId(uri));
-                break;
-            case STEP:
-                cursor = stepDao.selectAll();
-                break;
-            case STEP_ID:
-                cursor = stepDao.selectById(ContentUris.parseId(uri));
-                break;
-            default:
-                throw new UnsupportedOperationException("Unknown uri: " + uri);
-        }
-
-        notifyChange(uri);
-        return cursor;
-    }
-
-    @Override
-    public int update(@NonNull Uri uri, ContentValues values, String selection,
-                      String[] selectionArgs) {
-        if (context == null) return 0;
-        int count;
-
-        switch (URI_MATCHER.match(uri)) {
-            case RECIPE_ID:
-                Recipe recipe = Recipe.fromContentValues(values);
-                recipe.setId(ContentUris.parseId(uri));
-                count = recipeDao.update(recipe);
-                break;
-            case INGREDIENT_ID:
-                Ingredient ingredient = Ingredient.fromContentValues(values);
-                ingredient.setId(ContentUris.parseId(uri));
-                count = ingredientDao.update(ingredient);
-                break;
-            case STEP_ID:
-                Step step = Step.fromContentValues(values);
-                step.setId(ContentUris.parseId(uri));
-                count = stepDao.update(step);
-                break;
-            default:
-                throw new UnsupportedOperationException("Unknown uri: " + uri);
-        }
-
-        if (count != 0) notifyChange(uri);
-        return count;
     }
 
     @Override
@@ -188,9 +166,84 @@ public class RecipeProvider extends ContentProvider {
         }
     }
 
+
+
+    @Override
+    public Cursor query(@NonNull Uri uri, String[] projection, String selection,
+                        String[] selectionArguments, String sortOrder) {
+        final SQLiteDatabase database = recipeDbHelper.getReadableDatabase();
+        Cursor cursor;
+
+        switch (URI_MATCHER.match(uri)) {
+            case RECIPE:
+                cursor = database.query(RecipeEntry.TABLE_NAME, projection, selection,
+                        selectionArguments, null, null, sortOrder);
+                break;
+            case RECIPE_ID:
+                cursor = database.query(RecipeEntry.TABLE_NAME, projection,
+                        IngredientEntry._ID + "=?",
+                        new String[]{uri.getPathSegments().get(1)},
+                        null,
+                        null,
+                        sortOrder);
+                break;
+            case INGREDIENT_ID:
+                cursor = database.query(IngredientEntry.TABLE_NAME,
+                        projection,
+                        IngredientEntry.COLUMN_RECIPE + "=?",
+                        new String[]{uri.getPathSegments().get(1)},
+                        null,
+                        null,
+                        sortOrder);
+                break;
+            case STEP_ID:
+                cursor = database.query(StepEntry.TABLE_NAME,
+                        projection,
+                        StepEntry.COLUMN_RECIPE + "=?",
+                        new String[]{uri.getPathSegments().get(1)},
+                        null,
+                        null,
+                        sortOrder);
+                break;
+            default:
+                throw new UnsupportedOperationException("Unknown uri: " + uri);
+        }
+
+        notifyChange(uri);
+        return cursor;
+    }
+
+    @Override
+    public int update(@NonNull Uri uri, ContentValues values, String selection,
+                      String[] selectionArgs) {
+        final SQLiteDatabase database = recipeDbHelper.getWritableDatabase();
+        int numberOfRowsUpdated;
+
+        switch (URI_MATCHER.match(uri)) {
+            case RECIPE:
+                numberOfRowsUpdated = database
+                        .update(RecipeEntry.TABLE_NAME, values, selection, selectionArgs);
+                break;
+            case INGREDIENT:
+                numberOfRowsUpdated = database
+                        .update(IngredientEntry.TABLE_NAME, values, selection, selectionArgs);
+                break;
+            case STEP:
+                numberOfRowsUpdated = database
+                        .update(StepEntry.TABLE_NAME, values, selection, selectionArgs);
+                break;
+            default:
+                throw new UnsupportedOperationException("Unknown uri: " + uri);
+        }
+
+        if (numberOfRowsUpdated != 0) {
+            notifyChange(uri);
+        }
+
+        return numberOfRowsUpdated;
+    }
     private void notifyChange(@NonNull Uri uri) {
         if (context == null) return;
         context.getContentResolver().notifyChange(uri, null);
     }
-
 }

@@ -1,64 +1,33 @@
 package com.shane.baking.models;
 
-import android.arch.persistence.room.ColumnInfo;
-import android.arch.persistence.room.Entity;
-import android.arch.persistence.room.ForeignKey;
-import android.arch.persistence.room.Ignore;
-import android.arch.persistence.room.PrimaryKey;
 import android.content.ContentValues;
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
-import com.shane.baking.data.RecipeContract;
 import com.shane.baking.data.RecipeContract.IngredientEntry;
-
-import static android.arch.persistence.room.ForeignKey.CASCADE;
 
 
 /**
  * Created by Shane on 9/29/2017.
  */
-@Entity(tableName = IngredientEntry.TABLE_NAME,
-        foreignKeys = @ForeignKey(entity = Recipe.class,
-                parentColumns = RecipeContract.RecipeEntry._ID,
-                childColumns = IngredientEntry.COLUMN_RECIPE,
-                onDelete = CASCADE))
 public class Ingredient implements Parcelable {
-    @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = IngredientEntry._ID, index = true)
-    private long id;
 
-    @ColumnInfo(name = IngredientEntry.COLUMN_NAME)
     @SerializedName("ingredient")
     private String name;
 
-    @ColumnInfo(name = IngredientEntry.COLUMN_UNIT)
     @SerializedName("measure")
     private String unit;
 
-    @ColumnInfo(name = IngredientEntry.COLUMN_QUALITY)
     private double quantity;
 
-    @ColumnInfo(name = IngredientEntry.COLUMN_RECIPE)
     private long recipeId;
 
-    public Ingredient() {}
-
-    @Ignore
-    public Ingredient(long id, String name, double quantity, String unit) {
-        this.id = id;
+    public Ingredient(String name, double quantity, String unit, long recipeId) {
         this.name = name;
         this.quantity = quantity;
         this.unit = unit;
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
+        this.recipeId = recipeId;
     }
 
     public String getName() {
@@ -96,17 +65,14 @@ public class Ingredient implements Parcelable {
     @Override
     public String toString() {
         return "Ingredient{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
+                "name='" + name + '\'' +
                 ", unit='" + unit + '\'' +
                 ", quantity=" + quantity +
                 ", recipeId=" + recipeId +
                 '}';
     }
 
-    @Ignore
     protected Ingredient(Parcel in) {
-        id = in.readLong();
         name = in.readString();
         unit = in.readString();
         quantity = in.readDouble();
@@ -132,14 +98,46 @@ public class Ingredient implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeLong(id);
         parcel.writeString(name);
         parcel.writeString(unit);
         parcel.writeDouble(quantity);
         parcel.writeLong(recipeId);
     }
 
-    public static Ingredient fromContentValues(ContentValues values) {
-        return new Ingredient();
+    public static class Builder {
+        ContentValues values = new ContentValues();
+
+        public Builder name(String name) {
+            values.put(IngredientEntry.COLUMN_NAME, name);
+            return this;
+        }
+
+        public Builder unit(String unit) {
+            values.put(IngredientEntry.COLUMN_UNIT, unit);
+            return this;
+        }
+
+        public Builder quantity(double quantity) {
+            values.put(IngredientEntry.COLUMN_QUALITY, quantity);
+            return this;
+        }
+
+        public Builder recipeId(long recipeId) {
+            values.put(IngredientEntry.COLUMN_RECIPE, recipeId);
+            return this;
+        }
+
+        public ContentValues build() {
+            return values;
+        }
+    }
+
+    public ContentValues toContentValues() {
+        return new Builder()
+                .name(name)
+                .unit(unit)
+                .quantity(quantity)
+                .recipeId(recipeId)
+                .build();
     }
 }

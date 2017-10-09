@@ -76,7 +76,7 @@ public class RecipeWidgetActivity extends AppCompatActivity implements RecipeAda
 
         Intent recipeIntent = new Intent(this, RecipeDetailActivity.class);
         recipeIntent.putExtra(Constants.EXTRA_RECIPE, recipe);
-        PendingIntent recipePendingIntent = PendingIntent.getActivity(this, currentWidgetId, recipeIntent, 0);
+        PendingIntent recipePendingIntent = PendingIntent.getActivity(this, (int) recipe.getId(), recipeIntent, 0);
         remoteViews.setOnClickPendingIntent(R.id.container, recipePendingIntent);
 
         appWidgetManager.updateAppWidget(currentWidgetId, remoteViews);

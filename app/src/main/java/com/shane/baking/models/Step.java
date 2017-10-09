@@ -1,58 +1,50 @@
 package com.shane.baking.models;
 
-import android.arch.persistence.room.ColumnInfo;
-import android.arch.persistence.room.Entity;
-import android.arch.persistence.room.ForeignKey;
-import android.arch.persistence.room.Ignore;
 import android.content.ContentValues;
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
-import com.shane.baking.data.RecipeContract.RecipeEntry;
 import com.shane.baking.data.RecipeContract.StepEntry;
-
-import static android.arch.persistence.room.ForeignKey.CASCADE;
 
 /**
  * Created by Shane on 9/29/2017.
  */
-@Entity(tableName = StepEntry.TABLE_NAME,
-        primaryKeys = {StepEntry._ID, StepEntry.COLUMN_RECIPE},
-        foreignKeys = @ForeignKey(entity = Recipe.class,
-                parentColumns = RecipeEntry._ID,
-                childColumns = StepEntry.COLUMN_RECIPE,
-                onDelete = CASCADE))
 public class Step implements Parcelable {
-    @ColumnInfo(name = StepEntry._ID)
-    private long id;
 
-    @ColumnInfo(name = StepEntry.COLUMN_SUMMARY)
+    @SerializedName("id")
+    private long number;
+
     @SerializedName("shortDescription")
     private String summary;
 
-    @ColumnInfo(name = StepEntry.COLUMN_DESCRIPTION)
     private String description;
 
-    @ColumnInfo(name = StepEntry.COLUMN_VIDEO_URL)
     @SerializedName("videoURL")
     private String videoUrl;
 
-    @ColumnInfo(name = StepEntry.COLUMN_THUMBNAIL_URL)
     @SerializedName("thumbnailURL")
     private String thumbnailUrl;
 
-    @ColumnInfo(name = StepEntry.COLUMN_RECIPE)
     private long recipeId;
 
     public Step() {}
 
-    public long getId() {
-        return id;
+    public Step(long number, String summary, String description, String videoUrl, String thumbnailUrl, long recipeId) {
+        this.number = number;
+        this.summary = summary;
+        this.description = description;
+        this.videoUrl = videoUrl;
+        this.thumbnailUrl = thumbnailUrl;
+        this.recipeId = recipeId;
     }
 
-    public void setId(long id) {
-        this.id = id;
+    public long getNumber() {
+        return number;
+    }
+
+    public void setNumber(long number) {
+        this.number = number;
     }
 
     public String getSummary() {
@@ -95,9 +87,8 @@ public class Step implements Parcelable {
         this.recipeId = recipeId;
     }
 
-    @Ignore
     protected Step(Parcel in) {
-        id = in.readLong();
+        number = in.readLong();
         summary = in.readString();
         description = in.readString();
         videoUrl = in.readString();
@@ -124,7 +115,7 @@ public class Step implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeLong(id);
+        parcel.writeLong(number);
         parcel.writeString(summary);
         parcel.writeString(description);
         parcel.writeString(videoUrl);
@@ -135,7 +126,7 @@ public class Step implements Parcelable {
     @Override
     public String toString() {
         return "Step{" +
-                "id=" + id +
+                "number=" + number +
                 ", summary='" + summary + '\'' +
                 ", description='" + description + '\'' +
                 ", videoUrl='" + videoUrl + '\'' +
@@ -153,8 +144,8 @@ public class Step implements Parcelable {
 
         public Builder() {}
 
-        public Builder id(long id) {
-            values.put(StepEntry._ID, id);
+        public Builder number(long number) {
+            values.put(StepEntry.COLUMN_NUMBER, number);
             return this;
         }
 
@@ -186,5 +177,15 @@ public class Step implements Parcelable {
         public ContentValues build() {
             return values;
         }
+    }
+
+    public ContentValues toContentValues() {
+        return new Builder()
+                .number(number)
+                .summary(summary)
+                .description(description)
+                .videoUrl(videoUrl)
+                .thumbnailUrl(thumbnailUrl)
+                .recipeId(recipeId).build();
     }
 }

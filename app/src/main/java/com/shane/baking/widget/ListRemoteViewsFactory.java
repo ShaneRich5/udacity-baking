@@ -58,11 +58,12 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 
         while (cursor.moveToNext()) {
             long id = cursor.getLong(cursor.getColumnIndex(IngredientEntry._ID));
+            long recipeId = cursor.getLong(cursor.getColumnIndex(IngredientEntry.COLUMN_RECIPE));
             String name = cursor.getString(cursor.getColumnIndex(IngredientEntry.COLUMN_NAME));
             double quantity = cursor.getDouble(cursor.getColumnIndex(IngredientEntry.COLUMN_QUALITY));
             String unit = cursor.getString(cursor.getColumnIndex(IngredientEntry.COLUMN_UNIT));
 
-            ingredients.add(new Ingredient(id, name, quantity, unit));
+            ingredients.add(new Ingredient(name, quantity, unit, recipeId));
         }
         return ingredients;
     }

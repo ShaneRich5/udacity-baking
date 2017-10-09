@@ -1,9 +1,5 @@
 package com.shane.baking.models;
 
-import android.arch.persistence.room.ColumnInfo;
-import android.arch.persistence.room.Entity;
-import android.arch.persistence.room.Ignore;
-import android.arch.persistence.room.PrimaryKey;
 import android.content.ContentValues;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -20,29 +16,29 @@ import java.util.Locale;
 /**
  * Created by Shane on 9/29/2017.
  */
-@Entity(tableName = RecipeEntry.TABLE_NAME)
 public class Recipe implements Parcelable {
-    @PrimaryKey
-    @ColumnInfo(name = RecipeEntry._ID, index = true)
+
     private long id;
 
-    @ColumnInfo(name = RecipeEntry.COLUMN_NAME)
     private String name;
 
-    @ColumnInfo(name = RecipeEntry.COLUMN_SERVINGS)
     private int servings;
 
-    @ColumnInfo(name = RecipeEntry.COLUMN_IMAGE_URL)
     @SerializedName("image")
     private String imageUrl;
 
-    @Ignore
     private List<Step> steps = new ArrayList<>();
 
-    @Ignore
     private List<Ingredient> ingredients = new ArrayList<>();
 
     public Recipe() {}
+
+    public Recipe(long id, String name, int servings, String imageUrl) {
+        this.id = id;
+        this.name = name;
+        this.servings = servings;
+        this.imageUrl = imageUrl;
+    }
 
     public long getId() {
         return id;
@@ -92,7 +88,6 @@ public class Recipe implements Parcelable {
         this.ingredients = ingredients;
     }
 
-    @Ignore
     protected Recipe(Parcel in) {
         id = in.readLong();
         name = in.readString();
