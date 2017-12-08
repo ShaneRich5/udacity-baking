@@ -1,7 +1,7 @@
 package com.shane.baking.network;
 
 import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
-import com.shane.baking.models.Recipe;
+import com.shane.baking.data.Recipe;
 
 import java.util.List;
 

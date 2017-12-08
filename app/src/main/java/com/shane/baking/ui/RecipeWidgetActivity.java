@@ -15,7 +15,7 @@ import android.widget.Toast;
 import com.shane.baking.R;
 import com.shane.baking.adapters.RecipeAdapter;
 import com.shane.baking.data.RecipeContract;
-import com.shane.baking.models.Recipe;
+import com.shane.baking.data.Recipe;
 import com.shane.baking.utils.Constants;
 import com.shane.baking.widget.RecipeWidgetService;
 

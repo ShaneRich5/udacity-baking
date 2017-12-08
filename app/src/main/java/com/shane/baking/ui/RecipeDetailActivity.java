@@ -14,8 +14,8 @@ import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import com.shane.baking.R;
-import com.shane.baking.models.Recipe;
-import com.shane.baking.models.Step;
+import com.shane.baking.data.Recipe;
+import com.shane.baking.data.Step;
 import com.shane.baking.utils.Constants;
 
 import butterknife.BindView;

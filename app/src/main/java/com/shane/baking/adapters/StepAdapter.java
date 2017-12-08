@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.shane.baking.R;
-import com.shane.baking.models.Step;
+import com.shane.baking.data.Step;
 
 import java.util.List;
 import java.util.Locale;

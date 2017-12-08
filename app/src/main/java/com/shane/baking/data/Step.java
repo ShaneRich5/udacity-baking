@@ -1,4 +1,4 @@
-package com.shane.baking.models;
+package com.shane.baking.data;
 
 import android.content.ContentValues;
 import android.os.Parcel;

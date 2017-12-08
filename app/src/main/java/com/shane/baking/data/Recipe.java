@@ -1,11 +1,10 @@
-package com.shane.baking.models;
+package com.shane.baking.data;
 
 import android.content.ContentValues;
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.google.gson.Gson;
-import com.google.gson.annotations.SerializedName;
 import com.google.gson.reflect.TypeToken;
 import com.shane.baking.data.RecipeContract.RecipeEntry;
 
@@ -19,25 +18,20 @@ import java.util.Locale;
 public class Recipe implements Parcelable {
 
     private long id;
-
     private String name;
-
     private int servings;
-
-    @SerializedName("image")
-    private String imageUrl;
+    private String image;
 
     private List<Step> steps = new ArrayList<>();
-
     private List<Ingredient> ingredients = new ArrayList<>();
 
     public Recipe() {}
 
-    public Recipe(long id, String name, int servings, String imageUrl) {
+    public Recipe(long id, String name, int servings, String image) {
         this.id = id;
         this.name = name;
         this.servings = servings;
-        this.imageUrl = imageUrl;
+        this.image = image;
     }
 
     public long getId() {
@@ -64,12 +58,12 @@ public class Recipe implements Parcelable {
         this.servings = servings;
     }
 
-    public String getImageUrl() {
-        return imageUrl;
+    public String getImage() {
+        return image;
     }
 
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
+    public void setImageUrl(String image) {
+        this.image = image;
     }
 
     public List<Step> getSteps() {
@@ -92,7 +86,7 @@ public class Recipe implements Parcelable {
         id = in.readLong();
         name = in.readString();
         servings = in.readInt();
-        imageUrl = in.readString();
+        image = in.readString();
         steps = in.createTypedArrayList(Step.CREATOR);
         ingredients = in.createTypedArrayList(Ingredient.CREATOR);
     }
@@ -119,7 +113,7 @@ public class Recipe implements Parcelable {
         parcel.writeLong(id);
         parcel.writeString(name);
         parcel.writeInt(servings);
-        parcel.writeString(imageUrl);
+        parcel.writeString(image);
         parcel.writeTypedList(steps);
         parcel.writeTypedList(ingredients);
     }
@@ -170,7 +164,7 @@ public class Recipe implements Parcelable {
             id(recipe.id);
             name(recipe.name);
             servings(recipe.servings);
-            imageUrl(recipe.imageUrl);
+            imageUrl(recipe.image);
             steps(recipe.steps);
             ingredients(recipe.ingredients);
             return build();
@@ -183,7 +177,7 @@ public class Recipe implements Parcelable {
         recipe.id = values.getAsShort(RecipeEntry._ID);
         recipe.name = values.getAsString(RecipeEntry.COLUMN_NAME);
         recipe.servings = values.getAsInteger(RecipeEntry.COLUMN_SERVINGS);
-        recipe.imageUrl = values.getAsString(RecipeEntry.COLUMN_IMAGE_URL);
+        recipe.image = values.getAsString(RecipeEntry.COLUMN_IMAGE_URL);
         recipe.steps = gson.fromJson(values.getAsString(RecipeEntry.COLUMN_STEPS),
                 new TypeToken<List<Step>>() {}.getType());
         recipe.ingredients = gson.fromJson(values.getAsString(RecipeEntry.COLUMN_INGREDIENTS),

@@ -10,7 +10,7 @@ import android.widget.RemoteViewsService;
 
 import com.shane.baking.R;
 import com.shane.baking.data.RecipeContract.IngredientEntry;
-import com.shane.baking.models.Ingredient;
+import com.shane.baking.data.Ingredient;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -23,9 +23,9 @@ import com.shane.baking.R;
 import com.shane.baking.adapters.IngredientAdapter;
 import com.shane.baking.adapters.StepAdapter;
 import com.shane.baking.data.RecipeContract.RecipeEntry;
-import com.shane.baking.models.Ingredient;
-import com.shane.baking.models.Recipe;
-import com.shane.baking.models.Step;
+import com.shane.baking.data.Ingredient;
+import com.shane.baking.data.Recipe;
+import com.shane.baking.data.Step;
 import com.shane.baking.utils.Constants;
 
 import java.util.List;

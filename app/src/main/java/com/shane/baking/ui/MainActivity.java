@@ -11,15 +11,21 @@ import android.support.v7.widget.Toolbar;
 
 import com.shane.baking.R;
 import com.shane.baking.adapters.RecipeAdapter;
-import com.shane.baking.models.Recipe;
+import com.shane.baking.data.Recipe;
+import com.shane.baking.network.RecipeApi;
 import com.shane.baking.utils.Constants;
 import com.shane.baking.utils.SimpleIdlingResource;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity
         implements RecipeAdapter.OnClickHandler, RecipeListFragment.InteractionListener {
+
+    @Inject
+    RecipeApi recipeApi;
 
     @BindView(R.id.toolbar) Toolbar toolbar;
 
@@ -40,6 +46,7 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+
         setSupportActionBar(toolbar);
     }
 

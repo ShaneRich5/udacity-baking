@@ -17,7 +17,7 @@ import android.widget.TextView;
 
 import com.shane.baking.R;
 import com.shane.baking.adapters.RecipeAdapter;
-import com.shane.baking.models.Recipe;
+import com.shane.baking.data.Recipe;
 
 import java.net.UnknownHostException;
 import java.util.List;

@@ -14,7 +14,6 @@ import android.support.annotation.NonNull;
 import com.shane.baking.data.RecipeContract.IngredientEntry;
 import com.shane.baking.data.RecipeContract.RecipeEntry;
 import com.shane.baking.data.RecipeContract.StepEntry;
-import com.shane.baking.models.Recipe;
 
 public class RecipeProvider extends ContentProvider {
     private static final int RECIPE = 100;

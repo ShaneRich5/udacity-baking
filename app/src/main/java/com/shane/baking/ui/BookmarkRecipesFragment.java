@@ -11,9 +11,9 @@ import android.view.View;
 import com.shane.baking.data.RecipeContract.IngredientEntry;
 import com.shane.baking.data.RecipeContract.RecipeEntry;
 import com.shane.baking.data.RecipeContract.StepEntry;
-import com.shane.baking.models.Ingredient;
-import com.shane.baking.models.Recipe;
-import com.shane.baking.models.Step;
+import com.shane.baking.data.Ingredient;
+import com.shane.baking.data.Recipe;
+import com.shane.baking.data.Step;
 
 import java.util.ArrayList;
 import java.util.List;

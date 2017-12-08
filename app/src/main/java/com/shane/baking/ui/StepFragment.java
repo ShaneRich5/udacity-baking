@@ -36,7 +36,7 @@ import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
 import com.shane.baking.R;
-import com.shane.baking.models.Step;
+import com.shane.baking.data.Step;
 import com.shane.baking.utils.StringUtil;
 
 import butterknife.BindView;

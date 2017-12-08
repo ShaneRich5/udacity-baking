@@ -9,9 +9,6 @@ import butterknife.OnClick;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
-/**
- * Created by Shane on 10/6/2017.
- */
 
 public class BrowseRecipesFragment extends RecipeListFragment {
 
