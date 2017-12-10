@@ -22,10 +22,19 @@ public class RecipeDbHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        createRecipeTable(db);
-        createIngredientTable(db);
-        createStepTable(db);
+//        createRecipeTable(db);
+//        createIngredientTable(db);
+//        createStepTable(db);
     }
+
+    // $270
+
+    // $815
+
+    // $50
+
+    // 49
+
 
     private void createStepTable(SQLiteDatabase db) {
         final String CREATE_STATEMENT = "CREATE TABLE " + StepEntry.TABLE_NAME + " (" +
@@ -35,7 +44,7 @@ public class RecipeDbHelper extends SQLiteOpenHelper {
                 StepEntry.COLUMN_DESCRIPTION + " TEXT NOT NULL, " +
                 StepEntry.COLUMN_VIDEO_URL + " TEXT, " +
                 StepEntry.COLUMN_THUMBNAIL_URL + " TEXT, " +
-                StepEntry.COLUMN_RECIPE + " INTEGER NOT NULL);";
+                StepEntry.COLUMN_RECIPE_ID + " INTEGER NOT NULL);";
         db.execSQL(CREATE_STATEMENT);
     }
 
@@ -45,7 +54,7 @@ public class RecipeDbHelper extends SQLiteOpenHelper {
                 IngredientEntry.COLUMN_NAME + " TEXT NOT NULL, " +
                 IngredientEntry.COLUMN_QUALITY + " INTEGER NOT NULL, " +
                 IngredientEntry.COLUMN_UNIT + " TEXT NOT NULL, " +
-                IngredientEntry.COLUMN_RECIPE + " INTEGER NOT NULL);";
+                IngredientEntry.COLUMN_RECIPE_ID + " INTEGER NOT NULL);";
         db.execSQL(CREATE_STATEMENT);
     }
 

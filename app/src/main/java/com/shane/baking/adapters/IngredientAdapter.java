@@ -33,7 +33,7 @@ public class IngredientAdapter extends RecyclerView.Adapter<IngredientAdapter.In
     @Override
     public IngredientViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_ingredient_list, parent, false);
+                .inflate(R.layout.item_ingredient, parent, false);
         return new IngredientViewHolder(view);
     }
 
@@ -50,7 +50,7 @@ public class IngredientAdapter extends RecyclerView.Adapter<IngredientAdapter.In
 
     class IngredientViewHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R.id.ingredient_text_view) TextView ingredientTextView;
+        @BindView(R.id.name_text_view) TextView ingredientTextView;
 
         IngredientViewHolder(View itemView) {
             super(itemView);

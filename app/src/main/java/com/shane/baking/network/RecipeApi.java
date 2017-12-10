@@ -5,7 +5,7 @@ import com.shane.baking.data.Recipe;
 
 import java.util.List;
 
-import io.reactivex.Observable;
+import io.reactivex.Flowable;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.GET;
@@ -16,7 +16,7 @@ import retrofit2.http.GET;
 
 public interface RecipeApi {
     @GET("topher/2017/May/59121517_baking/baking.json")
-    Observable<List<Recipe>> getRecipe();
+    Flowable<List<Recipe>> getRecipes();
 
     class Factory {
         public static RecipeApi create() {

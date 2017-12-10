@@ -58,7 +58,7 @@ public class RecipeContract {
         public static final String COLUMN_DESCRIPTION = "description";
         public static final String COLUMN_VIDEO_URL = "video_url";
         public static final String COLUMN_THUMBNAIL_URL = "thumbnail_url";
-        public static final String COLUMN_RECIPE = "recipe_id";
+        public static final String COLUMN_RECIPE_ID = "recipe_id";
         public static final String COLUMN_NUMBER = "number";
 
         public static Uri buildStepUri(long id) {
@@ -79,7 +79,7 @@ public class RecipeContract {
         public static final String COLUMN_NAME = "name";
         public static final String COLUMN_UNIT = "unit";
         public static final String COLUMN_QUALITY = "quantity";
-        public static final String COLUMN_RECIPE = "recipe_id";
+        public static final String COLUMN_RECIPE_ID = "recipe_id";
 
         public static Uri buildIngredientUri(long id) {
             return ContentUris.withAppendedId(CONTENT_URI, id);

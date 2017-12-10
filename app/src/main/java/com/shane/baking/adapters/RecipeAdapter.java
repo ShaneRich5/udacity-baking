@@ -1,11 +1,11 @@
 package com.shane.baking.adapters;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.shane.baking.R;
@@ -23,7 +23,6 @@ import butterknife.ButterKnife;
 
 public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeViewHolder> {
 
-    private final Context context;
     private final OnClickHandler clickHandler;
     private List<Recipe> recipes = new ArrayList<>();
 
@@ -31,8 +30,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
         void onClick(Recipe recipe);
     }
 
-    public RecipeAdapter(@NonNull Context context, @NonNull OnClickHandler clickHandler) {
-        this.context = context;
+    public RecipeAdapter(@NonNull OnClickHandler clickHandler) {
         this.clickHandler = clickHandler;
     }
 
@@ -61,8 +59,9 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
 
     class RecipeViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        @BindView(R.id.name_text_view) TextView nameTextView;
-        @BindView(R.id.servings_text_view) TextView servingsTextView;
+        @BindView(R.id.recipe_image) ImageView recipeImageView;
+        @BindView(R.id.recipe_name_text) TextView recipeNameTextView;
+        @BindView(R.id.serving_size_text) TextView servingsTextView;
 
         RecipeViewHolder(View itemView) {
             super(itemView);
@@ -71,7 +70,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
         }
 
         void bind(Recipe recipe) {
-            nameTextView.setText(recipe.getName());
+            recipeNameTextView.setText(recipe.getName());
             servingsTextView.setText(String.valueOf(recipe.getServings()));
             itemView.setId((int) recipe.getId());
         }

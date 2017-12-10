@@ -66,15 +66,15 @@ public class RecipeProvider extends ContentProvider {
 
                 id = database.insert(RecipeEntry.TABLE_NAME, null, values);
 
-                recipe.getIngredients().forEach(ingredient -> {
+                for (Ingredient ingredient : recipe.getIngredients()) {
                     ingredient.setRecipeId(recipe.getId());
                     insert(IngredientEntry.CONTENT_URI, ingredient.toContentValues());
-                });
+                }
 
-                recipe.getSteps().forEach(step -> {
+                for (Step step : recipe.getSteps()) {
                     step.setRecipeId(recipe.getId());
                     insert(StepEntry.CONTENT_URI, step.toContentValues());
-                });
+                }
 
                 if (id > 0) {
                     returnUri = RecipeEntry.buildRecipeUri(id);
@@ -128,14 +128,14 @@ public class RecipeProvider extends ContentProvider {
                 break;
             case INGREDIENT_ID:
                 String ingredientId = uri.getPathSegments().get(1);
-                numberOfRowsDeleted = database.delete(IngredientEntry.TABLE_NAME, IngredientEntry.COLUMN_RECIPE + "=?", new String[]{ingredientId});
+                numberOfRowsDeleted = database.delete(IngredientEntry.TABLE_NAME, IngredientEntry.COLUMN_RECIPE_ID + "=?", new String[]{ingredientId});
                 break;
             case STEP:
                 numberOfRowsDeleted = database.delete(StepEntry.TABLE_NAME, selection, arguments);
                 break;
             case STEP_ID:
                 String stepId = uri.getPathSegments().get(1);
-                numberOfRowsDeleted = database.delete(StepEntry.TABLE_NAME, StepEntry.COLUMN_RECIPE + "=?", new String[]{stepId});
+                numberOfRowsDeleted = database.delete(StepEntry.TABLE_NAME, StepEntry.COLUMN_RECIPE_ID + "=?", new String[]{stepId});
                 break;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
@@ -189,7 +189,7 @@ public class RecipeProvider extends ContentProvider {
             case INGREDIENT_ID:
                 cursor = database.query(IngredientEntry.TABLE_NAME,
                         projection,
-                        IngredientEntry.COLUMN_RECIPE + "=?",
+                        IngredientEntry.COLUMN_RECIPE_ID + "=?",
                         new String[]{uri.getPathSegments().get(1)},
                         null,
                         null,
@@ -198,7 +198,7 @@ public class RecipeProvider extends ContentProvider {
             case STEP_ID:
                 cursor = database.query(StepEntry.TABLE_NAME,
                         projection,
-                        StepEntry.COLUMN_RECIPE + "=?",
+                        StepEntry.COLUMN_RECIPE_ID + "=?",
                         new String[]{uri.getPathSegments().get(1)},
                         null,
                         null,

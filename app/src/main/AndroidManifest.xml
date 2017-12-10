@@ -13,7 +13,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ui.MainActivity">
+        <activity
+            android:name=".ui.recipes.RecipesActivity"
+            android:label="@string/title_activity_recipes"
+            android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -21,37 +24,18 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.RecipeDetailActivity"
+            android:name=".ui.recipedetail.RecipeDetailActivity"
             android:label="@string/title_activity_recipe_detail"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".ui.StepActivity"
-            android:label="@string/title_activity_step"
-            android:theme="@style/AppTheme" />
-        <activity
-            android:name=".ui.RecipeWidgetActivity"
-            android:label="@string/title_activity_step"
-            android:theme="@style/AppTheme"
-            android:launchMode="singleInstance"/>
-
-        <provider
-            android:name=".data.RecipeProvider"
-            android:authorities="com.shane.baking"
-            android:exported="true" />
-
-        <receiver android:name=".widget.RecipeWidgetProvider">
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-            </intent-filter>
-
+            android:parentActivityName=".ui.recipes.RecipesActivity"
+            android:theme="@style/AppTheme">
             <meta-data
-                android:name="android.appwidget.provider"
-                android:resource="@xml/recipe_widget_info" />
-        </receiver>
-
-        <service
-            android:name=".widget.RecipeWidgetService"
-            android:permission="android.permission.BIND_REMOTEVIEWS" />
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.recipes.RecipesActivity" />
+        </activity>
+        <activity
+            android:name=".ui.steps.StepActivity"
+            android:label="@string/title_activity_step_detail"
+            android:theme="@style/AppTheme"></activity>
     </application>
 
 </manifest>

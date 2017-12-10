@@ -1,33 +1,63 @@
 package com.shane.baking.data;
 
+import android.arch.persistence.room.ColumnInfo;
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.ForeignKey;
+import android.arch.persistence.room.Ignore;
+import android.arch.persistence.room.Index;
+import android.arch.persistence.room.PrimaryKey;
 import android.content.ContentValues;
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
 import com.shane.baking.data.RecipeContract.IngredientEntry;
+import com.shane.baking.data.RecipeContract.RecipeEntry;
 
+import static android.arch.persistence.room.ForeignKey.CASCADE;
 
-/**
- * Created by Shane on 9/29/2017.
- */
+@Entity(tableName = IngredientEntry.TABLE_NAME,
+        foreignKeys = {
+        @ForeignKey(entity = Recipe.class,
+                parentColumns = RecipeEntry._ID,
+                childColumns = IngredientEntry.COLUMN_RECIPE_ID,
+                onDelete = CASCADE)},
+        indices = {@Index(value = IngredientEntry.COLUMN_RECIPE_ID)})
 public class Ingredient implements Parcelable {
+    @PrimaryKey
+    private long id;
 
     @SerializedName("ingredient")
+    @ColumnInfo(name = IngredientEntry.COLUMN_NAME)
     private String name;
 
     @SerializedName("measure")
+    @ColumnInfo(name = IngredientEntry.COLUMN_UNIT)
     private String unit;
 
+    @ColumnInfo(name = IngredientEntry.COLUMN_QUALITY)
     private double quantity;
 
+    @ColumnInfo(name = IngredientEntry.COLUMN_RECIPE_ID)
     private long recipeId;
 
+    public Ingredient() {
+    }
+
+    @Ignore
     public Ingredient(String name, double quantity, String unit, long recipeId) {
         this.name = name;
         this.quantity = quantity;
         this.unit = unit;
         this.recipeId = recipeId;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -123,7 +153,7 @@ public class Ingredient implements Parcelable {
         }
 
         public Builder recipeId(long recipeId) {
-            values.put(IngredientEntry.COLUMN_RECIPE, recipeId);
+            values.put(IngredientEntry.COLUMN_RECIPE_ID, recipeId);
             return this;
         }
 
