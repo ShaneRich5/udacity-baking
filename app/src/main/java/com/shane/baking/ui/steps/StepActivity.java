@@ -113,8 +113,6 @@ public class StepActivity extends BaseActivity {
             return fragment;
         }
 
-
-
         @Override
         public int getCount() {
             return steps.size();

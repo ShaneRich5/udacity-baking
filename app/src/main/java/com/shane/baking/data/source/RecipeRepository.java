@@ -62,7 +62,7 @@ public class RecipeRepository implements RecipeDataSource {
             return remoteRecipes;
         } else {
             Flowable<List<Recipe>> localRecipes = getAndCacheLocalRecipes();
-            return Flowable.concat(localRecipes, remoteRecipes)
+            return Flowable.concat(remoteRecipes, localRecipes)
                     .filter(recipes -> ! recipes.isEmpty())
                     .firstOrError()
                     .toFlowable();

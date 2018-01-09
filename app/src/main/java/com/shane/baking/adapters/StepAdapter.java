@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.shane.baking.R;
 import com.shane.baking.data.Step;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -34,10 +35,19 @@ public class StepAdapter extends RecyclerView.Adapter<StepAdapter.StepViewHolder
         public void onClick(Step step);
     }
 
+    public StepAdapter(Context context, OnClickHandler clickHandler) {
+        this(context, clickHandler, new ArrayList<>());
+    }
+
     public StepAdapter(Context context, OnClickHandler clickHandler, List<Step> steps) {
         this.context = context;
         this.clickHandler = clickHandler;
         this.steps = steps;
+    }
+
+    public void setSteps(@NonNull List<Step> steps) {
+        this.steps = steps;
+        notifyDataSetChanged();
     }
 
     @Override

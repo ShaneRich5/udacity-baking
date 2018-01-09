@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.shane.baking.R;
 import com.shane.baking.data.Ingredient;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -25,7 +26,11 @@ public class IngredientAdapter extends RecyclerView.Adapter<IngredientAdapter.In
     private final Context context;
     private List<Ingredient> ingredients;
 
-    public IngredientAdapter(Context context, List<Ingredient> ingredients) {
+    public IngredientAdapter(@NonNull Context context) {
+        this(context, new ArrayList<>());
+    }
+
+    public IngredientAdapter(@NonNull Context context, @NonNull List<Ingredient> ingredients) {
         this.context = context;
         this.ingredients = ingredients;
     }
@@ -41,6 +46,11 @@ public class IngredientAdapter extends RecyclerView.Adapter<IngredientAdapter.In
     public void onBindViewHolder(IngredientViewHolder holder, int position) {
         Ingredient ingredient = ingredients.get(position);
         holder.bind(ingredient);
+    }
+
+    public void setIngredients(@NonNull List<Ingredient> ingredients) {
+        this.ingredients = ingredients;
+        notifyDataSetChanged();
     }
 
     @Override

@@ -13,9 +13,11 @@ public class StepContract {
         void hideVideoPlayer();
 
         void setupVideoPlayer(@NonNull String url);
+
+        void releaseVideoPlayer();
     }
 
-    interface Presenter extends BasePresenter {
+    public interface Presenter extends BasePresenter {
 
     }
 }

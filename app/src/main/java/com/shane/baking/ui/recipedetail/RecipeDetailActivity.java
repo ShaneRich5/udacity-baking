@@ -16,7 +16,9 @@ import com.shane.baking.adapters.StepAdapter;
 import com.shane.baking.data.Recipe;
 import com.shane.baking.data.Step;
 import com.shane.baking.ui.BaseActivity;
+import com.shane.baking.ui.steps.StepContract;
 import com.shane.baking.ui.steps.StepFragment;
+import com.shane.baking.ui.steps.StepPresenter;
 
 import butterknife.BindView;
 
@@ -31,7 +33,8 @@ public class RecipeDetailActivity extends BaseActivity implements StepAdapter.On
 
     public static final String EXTRA_RECIPE = "extra_recipe";
 
-    RecipeDetailContract.Presenter presenter;
+    RecipeDetailContract.Presenter recipePresenter;
+    StepContract.Presenter stepPresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +56,7 @@ public class RecipeDetailActivity extends BaseActivity implements StepAdapter.On
         RecipeDetailFragment recipeDetailFragment = (RecipeDetailFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.fragment);
 
-        presenter = new RecipeDetailPresenter(recipeDetailFragment, recipe);
+        recipePresenter = new RecipeDetailPresenter(recipeDetailFragment, recipe);
 
         setupActionBar(getSupportActionBar(), recipe.getName());
     }
@@ -78,13 +81,14 @@ public class RecipeDetailActivity extends BaseActivity implements StepAdapter.On
     @Override
     public void onClick(Step step) {
         if (detailContainerLayout == null) {
-            presenter.openRecipeSteps(step);
+            recipePresenter.openRecipeSteps(step);
         } else {
-            StepFragment fragment = StepFragment.newInstance(step);
+            StepFragment fragment = new StepFragment();
             getSupportFragmentManager()
                     .beginTransaction()
                     .replace(detailContainerLayout.getId(), fragment)
                     .commit();
+            stepPresenter = new StepPresenter(fragment, step);
         }
     }
 }

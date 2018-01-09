@@ -34,7 +34,7 @@ public class StepPresenter implements StepContract.Presenter {
         if (TextUtils.isEmpty(videoUrl)) {
             stepView.hideVideoPlayer();
         } else {
-            stepView.setVidePlayer(videoUrl);
+            stepView.setupVideoPlayer(videoUrl);
         }
     }
 

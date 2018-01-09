@@ -10,6 +10,7 @@ import android.content.ContentValues;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.shane.baking.data.RecipeContract.StepEntry;
 
@@ -23,7 +24,9 @@ import static android.arch.persistence.room.ForeignKey.CASCADE;
                 onDelete = CASCADE)},
         indices = {@Index(value = StepEntry.COLUMN_RECIPE_ID)})
 public class Step implements Parcelable {
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
+    @Expose(serialize = false, deserialize = false)
+    @SerializedName("none")
     private long id;
 
     @SerializedName("id")
