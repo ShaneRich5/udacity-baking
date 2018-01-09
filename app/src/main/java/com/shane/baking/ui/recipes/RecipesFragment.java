@@ -16,8 +16,9 @@ import android.widget.TextView;
 import com.shane.baking.R;
 import com.shane.baking.adapters.RecipeAdapter;
 import com.shane.baking.data.Recipe;
-import com.shane.baking.ui.BaseFragment;
+import com.shane.baking.ui.base.BaseFragment;
 import com.shane.baking.ui.GridSpaceItemDecoration;
+import com.shane.baking.ui.recipedetail.RecipeDetailActivity;
 
 import java.util.List;
 
@@ -107,7 +108,8 @@ public class RecipesFragment extends BaseFragment implements RecipesContract.Vie
 
     @Override
     public void showRecipeDetailScreen(@NonNull Recipe recipe) {
-        Intent recipeIntent = new Intent(getContext(), RecipesActivity.class);
+        Intent recipeIntent = new Intent(getContext(), RecipeDetailActivity.class);
+        recipeIntent.putExtra(RecipeDetailActivity.EXTRA_RECIPE, recipe);
         startActivity(recipeIntent);
     }
 

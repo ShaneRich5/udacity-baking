@@ -16,7 +16,7 @@ import android.view.MenuItem;
 
 import com.shane.baking.R;
 import com.shane.baking.data.Step;
-import com.shane.baking.ui.BaseActivity;
+import com.shane.baking.ui.base.BaseActivity;
 
 import java.util.List;
 

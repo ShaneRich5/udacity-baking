@@ -12,7 +12,7 @@ import com.shane.baking.data.source.local.RecipeDatabase;
 import com.shane.baking.data.source.local.RecipeLocalDataSource;
 import com.shane.baking.data.source.remote.RecipeRemoteDataSource;
 import com.shane.baking.network.RecipeApi;
-import com.shane.baking.ui.BaseActivity;
+import com.shane.baking.ui.base.BaseActivity;
 
 import butterknife.BindView;
 

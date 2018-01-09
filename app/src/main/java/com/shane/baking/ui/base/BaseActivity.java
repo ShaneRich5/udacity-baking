@@ -1,4 +1,4 @@
-package com.shane.baking.ui;
+package com.shane.baking.ui.base;
 
 import android.support.annotation.LayoutRes;
 import android.support.v7.app.AppCompatActivity;

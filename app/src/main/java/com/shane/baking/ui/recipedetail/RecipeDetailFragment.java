@@ -16,7 +16,7 @@ import com.shane.baking.adapters.IngredientAdapter;
 import com.shane.baking.adapters.StepAdapter;
 import com.shane.baking.data.Recipe;
 import com.shane.baking.data.Step;
-import com.shane.baking.ui.BaseFragment;
+import com.shane.baking.ui.base.BaseFragment;
 import com.shane.baking.ui.steps.StepActivity;
 
 import java.util.ArrayList;

@@ -1,4 +1,4 @@
-package com.shane.baking.ui;
+package com.shane.baking.ui.base;
 
 public interface BasePresenter {
 

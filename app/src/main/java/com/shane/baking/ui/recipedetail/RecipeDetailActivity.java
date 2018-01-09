@@ -15,7 +15,8 @@ import com.shane.baking.R;
 import com.shane.baking.adapters.StepAdapter;
 import com.shane.baking.data.Recipe;
 import com.shane.baking.data.Step;
-import com.shane.baking.ui.BaseActivity;
+import com.shane.baking.exceptions.RecipeNotFoundException;
+import com.shane.baking.ui.base.BaseActivity;
 import com.shane.baking.ui.steps.StepContract;
 import com.shane.baking.ui.steps.StepFragment;
 import com.shane.baking.ui.steps.StepPresenter;
@@ -44,21 +45,33 @@ public class RecipeDetailActivity extends BaseActivity implements StepAdapter.On
 
         Intent startingIntent = getIntent();
 
-        if ( ! startingIntent.hasExtra(EXTRA_RECIPE)) {
+        try {
+            final Recipe recipe = retrieveRecipeFromIntent(startingIntent);
+
+            RecipeDetailFragment recipeDetailFragment = (RecipeDetailFragment) getSupportFragmentManager()
+                    .findFragmentById(R.id.fragment);
+
+            recipePresenter = new RecipeDetailPresenter(recipeDetailFragment, recipe);
+            setupActionBar(getSupportActionBar(), recipe.getName());
+        } catch (RecipeNotFoundException exception) {
             Toast.makeText(this, "Failed to load recipe", Toast.LENGTH_SHORT).show();
             finish();
-            return;
+        }
+    }
+
+    @NonNull
+    private Recipe retrieveRecipeFromIntent(@NonNull Intent startingIntent) throws RecipeNotFoundException {
+        if ( ! startingIntent.hasExtra(EXTRA_RECIPE)) {
+            throw new RecipeNotFoundException();
         }
 
-        final Recipe recipe = getIntent()
-                .getParcelableExtra(EXTRA_RECIPE);
+        Recipe recipe = startingIntent.getParcelableExtra(EXTRA_RECIPE);
 
-        RecipeDetailFragment recipeDetailFragment = (RecipeDetailFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.fragment);
+        if (recipe == null) {
+            throw new RecipeNotFoundException();
+        }
 
-        recipePresenter = new RecipeDetailPresenter(recipeDetailFragment, recipe);
-
-        setupActionBar(getSupportActionBar(), recipe.getName());
+        return recipe;
     }
 
     private void setupActionBar(ActionBar actionBar, @NonNull String name) {

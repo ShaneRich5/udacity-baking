@@ -2,8 +2,8 @@ package com.shane.baking.ui.steps;
 
 import android.support.annotation.NonNull;
 
-import com.shane.baking.ui.BasePresenter;
-import com.shane.baking.ui.BaseView;
+import com.shane.baking.ui.base.BasePresenter;
+import com.shane.baking.ui.base.BaseView;
 
 public class StepContract {
 
