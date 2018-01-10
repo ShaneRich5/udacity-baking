@@ -157,7 +157,6 @@ public class StepFragment extends BaseFragment implements StepContract.View, Exo
 
     @Override
     public void releaseVideoPlayer() {
-        hideVideoPlayer();
         if (exoPlayer == null) return;
         exoPlayer.stop();
         exoPlayer.release();

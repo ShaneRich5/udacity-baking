@@ -35,6 +35,25 @@
         <activity
             android:name=".ui.steps.StepActivity"
             android:label="@string/title_activity_step_detail"
+            android:theme="@style/AppTheme" />
+
+        <receiver android:name=".ui.widget.RecipeWidget">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/recipe_widget_info" />
+        </receiver>
+
+        <activity
+            android:name=".ui.widget.RecipeWidgetActivity"
+            android:label="@string/title_activity_recipe_widget"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".ui.widget.RecipeChoiceActivity"
+            android:label="@string/title_activity_recipe_choice"
             android:theme="@style/AppTheme"></activity>
     </application>
 
