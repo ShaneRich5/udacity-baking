@@ -7,11 +7,13 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.ExoPlaybackException;
@@ -34,6 +36,7 @@ import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
 import com.shane.baking.R;
+import com.shane.baking.data.Step;
 import com.shane.baking.ui.base.BaseFragment;
 
 import butterknife.BindView;
@@ -49,7 +52,8 @@ public class StepFragment extends BaseFragment implements StepContract.View, Exo
     @BindView(R.id.player_view)
     SimpleExoPlayerView exoPlayerView;
 
-    public static final String TAG = StepFragment.class.getName();
+    public static final String TAG = StepFragment.class.getSimpleName();
+    public static final String EXTRA_STEP = "step";
     public static final String STATE_SEEK_POSITION = "seek_position";
     public static final String STATE_IS_PLAYING = "is_playing";
 
@@ -58,11 +62,20 @@ public class StepFragment extends BaseFragment implements StepContract.View, Exo
     private SimpleExoPlayer exoPlayer;
     private Dialog fullscreenDialog;
 
+    private Step cachedStep;
     private long seekPosition = 0;
 
-    private StepContract.Presenter presenter;
-
     public StepFragment() {
+    }
+
+    public static StepFragment newInstance(@NonNull Step step) {
+        Bundle args = new Bundle();
+        args.putParcelable(EXTRA_STEP, step);
+
+        StepFragment fragment = new StepFragment();
+        fragment.setArguments(args);
+
+        return fragment;
     }
 
     @Override
@@ -71,39 +84,43 @@ public class StepFragment extends BaseFragment implements StepContract.View, Exo
         return inflater.inflate(R.layout.fragment_step, container, false);
     }
 
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-    }
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putLong(STATE_SEEK_POSITION, seekPosition);
+        outState.putParcelable(EXTRA_STEP, cachedStep);
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        if (savedInstanceState == null) return;
-        seekPosition = savedInstanceState.getLong(STATE_SEEK_POSITION, 0);
+
+        if (savedInstanceState != null) {
+            seekPosition = savedInstanceState.getLong(STATE_SEEK_POSITION, 0);
+            final Step step = savedInstanceState.getParcelable(EXTRA_STEP);
+
+            if (step == null) {
+                Toast.makeText(getContext(), "Error loading step", Toast.LENGTH_SHORT).show();
+            } else {
+                cachedStep = step;
+                updateStepViews(step);
+            }
+        }
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        presenter.subscribe();
-    }
+    public void updateStepViews(@NonNull Step step) {
+        final String description = step.getDescription();
+        final String videoUrl = step.formatVideoUrl();
 
-    @Override
-    public void onPause() {
-        super.onPause();
-        presenter.unsubscribe();
-    }
+        showDescription(description);
 
-    @Override
-    public void setPresenter(StepContract.Presenter presenter) {
-        this.presenter = presenter;
+        if (TextUtils.isEmpty(videoUrl)) {
+            hideVideoPlayer();
+        } else {
+            setupVideoPlayer(videoUrl);
+        }
     }
 
     @Override

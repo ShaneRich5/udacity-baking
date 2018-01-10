@@ -36,8 +36,6 @@ public class StepActivity extends BaseActivity {
     public static final String EXTRA_STEP_LIST = "extra_step_list";
     public static final String EXTRA_STEP_SELECTED = "extra_step_selected";
 
-    private StepContract.Presenter presenter;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -108,9 +106,7 @@ public class StepActivity extends BaseActivity {
         @Override
         public Fragment getItem(int position) {
             final Step step = steps.get(position);
-            final StepFragment fragment = new StepFragment();
-            presenter = new StepPresenter(fragment, step);
-            return fragment;
+            return StepFragment.newInstance(step);
         }
 
         @Override

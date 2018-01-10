@@ -9,6 +9,8 @@ import android.arch.persistence.room.PrimaryKey;
 import android.content.ContentValues;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.Nullable;
+import android.text.TextUtils;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -61,6 +63,13 @@ public class Step implements Parcelable {
         this.videoUrl = videoUrl;
         this.thumbnailUrl = thumbnailUrl;
         this.recipeId = recipeId;
+    }
+
+    @Nullable
+    public String formatVideoUrl() {
+        if ( ! TextUtils.isEmpty(getVideoUrl())) return getVideoUrl();
+        if ( ! TextUtils.isEmpty(getThumbnailUrl())) return getThumbnailUrl();
+        return null;
     }
 
     public long getId() {

@@ -17,11 +17,10 @@ import com.shane.baking.data.Recipe;
 import com.shane.baking.data.Step;
 import com.shane.baking.exceptions.RecipeNotFoundException;
 import com.shane.baking.ui.base.BaseActivity;
-import com.shane.baking.ui.steps.StepContract;
 import com.shane.baking.ui.steps.StepFragment;
-import com.shane.baking.ui.steps.StepPresenter;
 
 import butterknife.BindView;
+import timber.log.Timber;
 
 public class RecipeDetailActivity extends BaseActivity implements StepAdapter.OnClickHandler {
 
@@ -35,7 +34,6 @@ public class RecipeDetailActivity extends BaseActivity implements StepAdapter.On
     public static final String EXTRA_RECIPE = "extra_recipe";
 
     RecipeDetailContract.Presenter recipePresenter;
-    StepContract.Presenter stepPresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +42,8 @@ public class RecipeDetailActivity extends BaseActivity implements StepAdapter.On
         setSupportActionBar(toolbar);
 
         Intent startingIntent = getIntent();
+
+        Timber.i("Step layout present: %b", detailContainerLayout != null);
 
         try {
             final Recipe recipe = retrieveRecipeFromIntent(startingIntent);
@@ -74,7 +74,7 @@ public class RecipeDetailActivity extends BaseActivity implements StepAdapter.On
         return recipe;
     }
 
-    private void setupActionBar(ActionBar actionBar, @NonNull String name) {
+    private void setupActionBar(@Nullable ActionBar actionBar, @NonNull String name) {
         if (actionBar == null) return;
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setTitle(name);
@@ -96,12 +96,11 @@ public class RecipeDetailActivity extends BaseActivity implements StepAdapter.On
         if (detailContainerLayout == null) {
             recipePresenter.openRecipeSteps(step);
         } else {
-            StepFragment fragment = new StepFragment();
+            StepFragment fragment = StepFragment.newInstance(step);
             getSupportFragmentManager()
                     .beginTransaction()
                     .replace(detailContainerLayout.getId(), fragment)
                     .commit();
-            stepPresenter = new StepPresenter(fragment, step);
         }
     }
 }
