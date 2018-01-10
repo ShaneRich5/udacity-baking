@@ -2,17 +2,18 @@ package com.shane.baking.data.source.remote;
 
 import android.support.annotation.NonNull;
 
+import com.shane.baking.data.Ingredient;
 import com.shane.baking.data.Recipe;
 import com.shane.baking.data.source.RecipeDataSource;
 import com.shane.baking.network.RecipeApi;
 
-import org.reactivestreams.Subscriber;
+import org.reactivestreams.Publisher;
 
 import java.util.List;
 
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
-import io.reactivex.Maybe;
+import io.reactivex.functions.Function;
 
 public class RecipeRemoteDataSource implements RecipeDataSource {
 
@@ -42,19 +43,24 @@ public class RecipeRemoteDataSource implements RecipeDataSource {
     }
 
     @Override
-    public Flowable<Maybe<Recipe>> getRecipe(long id) {
-        return getRecipes().flatMap(recipes -> new Flowable<Maybe<Recipe>>() {
+    public Flowable<Recipe> getRecipe(long id) {
+        return getRecipes().flatMap(new Function<List<Recipe>, Publisher<Recipe>>() {
             @Override
-            protected void subscribeActual(Subscriber<? super Maybe<Recipe>> sub) {
+            public Publisher<Recipe> apply(List<Recipe> recipes) throws Exception {
                 for (Recipe recipe : recipes) {
                     if (recipe.getId() == id) {
-                        sub.onNext(Maybe.just(recipe));
-                        return;
+                        return Flowable.just(recipe);
                     }
                 }
-                sub.onNext(Maybe.empty());
+
+                return Flowable.empty();
             }
         });
+    }
+
+    @Override
+    public Flowable<List<Ingredient>> getIngredientsForRecipe(long recipeId) {
+        return getRecipe(recipeId).map(Recipe::getIngredients);
     }
 
     @Override

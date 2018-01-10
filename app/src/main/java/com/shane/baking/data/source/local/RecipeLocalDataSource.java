@@ -8,14 +8,11 @@ import com.shane.baking.data.Recipe;
 import com.shane.baking.data.Step;
 import com.shane.baking.data.source.RecipeDataSource;
 
-import org.reactivestreams.Subscriber;
-
 import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
-import io.reactivex.Maybe;
 import io.reactivex.functions.Function;
 
 public class RecipeLocalDataSource implements RecipeDataSource {
@@ -47,7 +44,7 @@ public class RecipeLocalDataSource implements RecipeDataSource {
                 .map(DATA_TO_RECIPES_MAPPER);
     }
 
-    Function<List<RecipeWithStepsAndIngredients>, List<Recipe>> DATA_TO_RECIPES_MAPPER = (recipesWithRelations) -> {
+    private Function<List<RecipeWithStepsAndIngredients>, List<Recipe>> DATA_TO_RECIPES_MAPPER = (recipesWithRelations) -> {
         List<Recipe> recipes = new ArrayList<>();
 
         for (RecipeWithStepsAndIngredients recipeWithStepsAndIngredients : recipesWithRelations) {
@@ -61,22 +58,21 @@ public class RecipeLocalDataSource implements RecipeDataSource {
     };
 
     @Override
-    public Flowable<Maybe<Recipe>> getRecipe(long id) {
-        return recipeDao.getRecipeWithRelations(id).flatMap(recipeWithRelations -> new Flowable<Maybe<Recipe>>() {
-            @Override
-            protected void subscribeActual(Subscriber<? super Maybe<Recipe>> emitter) {
-                if (recipeWithRelations == null) {
-                    Maybe.empty();
-                    return;
-                }
+    public Flowable<Recipe> getRecipe(long id) {
+        return recipeDao.getRecipeWithRelations(id)
+                .flatMap(recipeWithRelations -> {
+                    if (recipeWithRelations == null) return Flowable.empty();
 
-                Recipe recipe = recipeWithRelations.recipe;
-                recipe.setSteps(recipeWithRelations.steps);
-                recipe.setIngredients(recipeWithRelations.ingredients);
+                    Recipe recipe = recipeWithRelations.recipe;
+                    recipe.setSteps(recipeWithRelations.steps);
+                    recipe.setIngredients(recipeWithRelations.ingredients);
+                    return Flowable.just(recipe);
+                });
+    }
 
-                Maybe.just(recipe);
-            }
-        });
+    @Override
+    public Flowable<List<Ingredient>> getIngredientsForRecipe(long recipeId) {
+        return recipeDao.getAllIngredientsByRecipeId(recipeId);
     }
 
     @Override

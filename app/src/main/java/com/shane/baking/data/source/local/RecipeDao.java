@@ -7,6 +7,7 @@ import android.arch.persistence.room.Transaction;
 
 import com.shane.baking.data.Ingredient;
 import com.shane.baking.data.Recipe;
+import com.shane.baking.data.RecipeContract.IngredientEntry;
 import com.shane.baking.data.RecipeContract.RecipeEntry;
 import com.shane.baking.data.Step;
 
@@ -30,6 +31,9 @@ public interface RecipeDao {
 
     @Insert(onConflict = REPLACE)
     void insertSteps(List<Step> steps);
+
+    @Query("SELECT * FROM " + IngredientEntry.TABLE_NAME + " WHERE " + IngredientEntry.COLUMN_RECIPE_ID + " = :recipeId")
+    Flowable<List<Ingredient>> getAllIngredientsByRecipeId(long recipeId);
 
     @Query("SELECT * FROM " + RecipeEntry.TABLE_NAME)
     Flowable<List<Recipe>> getAll();

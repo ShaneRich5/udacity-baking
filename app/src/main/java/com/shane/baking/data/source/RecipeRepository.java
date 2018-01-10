@@ -3,15 +3,16 @@ package com.shane.baking.data.source;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.shane.baking.data.Ingredient;
 import com.shane.baking.data.Recipe;
 
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
-import io.reactivex.Maybe;
 
 public class RecipeRepository implements RecipeDataSource {
 
@@ -87,8 +88,41 @@ public class RecipeRepository implements RecipeDataSource {
     }
 
     @Override
-    public Flowable<Maybe<Recipe>> getRecipe(long id) {
-        return null;
+    public Flowable<Recipe> getRecipe(long id) {
+        final Recipe cachedRecipe = getRecipeFromCacheWithId(id);
+
+        if (cachedRecipe != null) {
+            return Flowable.just(cachedRecipe);
+        }
+
+        if (cachedRecipes == null) {
+            cachedRecipes = new HashMap<>();
+        }
+
+        Flowable<Recipe> localRecipe = recipeLocalDataSource
+                .getRecipe(id);
+
+        Flowable<Recipe> remoteRecipe = recipeRemoteDataSource
+                .getRecipe(id).doOnNext(recipeLocalDataSource::saveRecipe);
+
+        return Flowable.concat(localRecipe, remoteRecipe)
+                .filter(recipe -> recipe != null)
+                .firstOrError()
+                .toFlowable();
+    }
+
+    @Nullable
+    private Recipe getRecipeFromCacheWithId(long id) {
+        if (cachedRecipes == null || cachedRecipes.isEmpty()) {
+            return null;
+        } else {
+            return cachedRecipes.get(id);
+        }
+    }
+
+    @Override
+    public Flowable<List<Ingredient>> getIngredientsForRecipe(long recipeId) {
+        return getRecipe(recipeId).map(Recipe::getIngredients);
     }
 
     @Override
