@@ -79,34 +79,50 @@ public class StepFragment extends BaseFragment implements StepContract.View, Exo
     }
 
     @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        if (getArguments() != null) {
+            cachedStep = getArguments().getParcelable(EXTRA_STEP);
+        }
+
+        if (savedInstanceState != null) {
+            seekPosition = savedInstanceState.getLong(STATE_SEEK_POSITION, 0);
+            Step step = savedInstanceState.getParcelable(EXTRA_STEP);
+
+            if (cachedStep == null && step != null) {
+                cachedStep = step;
+            }
+        }
+
+        if (cachedStep == null) {
+            Toast.makeText(getContext(), getString(R.string.error_loading_step), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_step, container, false);
     }
 
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        updateStepViews(cachedStep);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        releaseVideoPlayer();
+    }
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putLong(STATE_SEEK_POSITION, seekPosition);
         outState.putParcelable(EXTRA_STEP, cachedStep);
-    }
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-
-        if (savedInstanceState != null) {
-            seekPosition = savedInstanceState.getLong(STATE_SEEK_POSITION, 0);
-            final Step step = savedInstanceState.getParcelable(EXTRA_STEP);
-
-            if (step == null) {
-                Toast.makeText(getContext(), "Error loading step", Toast.LENGTH_SHORT).show();
-            } else {
-                cachedStep = step;
-                updateStepViews(step);
-            }
-        }
     }
 
     @Override
@@ -141,6 +157,7 @@ public class StepFragment extends BaseFragment implements StepContract.View, Exo
 
     @Override
     public void releaseVideoPlayer() {
+        hideVideoPlayer();
         if (exoPlayer == null) return;
         exoPlayer.stop();
         exoPlayer.release();
