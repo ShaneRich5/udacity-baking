@@ -54,10 +54,7 @@ public class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFac
     public void onDataSetChanged() {
         Disposable disposable = repository.getIngredientsForRecipe(recipeId)
                 .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-                .subscribe(newIngredients -> {
-                    ingredients = newIngredients;
-//                    Toast.makeText(context, "ingredients: " + ingredients, Toast.LENGTH_SHORT).show();
-                }, Timber::e);
+                .subscribe(newIngredients -> ingredients = newIngredients, Timber::e);
         compositeDisposable.add(disposable);
     }
 
@@ -74,8 +71,6 @@ public class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFac
     @Override
     public RemoteViews getViewAt(int index) {
         Ingredient ingredient = ingredients.get(index);
-
-        Timber.i("ingredient: %s", ingredient);
 
         RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.item_ingredient_widget);
 

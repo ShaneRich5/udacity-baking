@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 
 import com.shane.baking.data.Recipe;
 import com.shane.baking.data.source.RecipeDataSource;
+import com.shane.baking.utils.SimpleIdlingResource;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
@@ -22,13 +23,18 @@ public class RecipesPresenter implements RecipesContract.Presenter {
     @NonNull
     RecipeDataSource repository;
 
+    @NonNull
+    SimpleIdlingResource idlingResource;
+
     private boolean isFirstLoad = true;
 
     RecipesPresenter(@NonNull RecipesContract.View view,
-                     @NonNull RecipeDataSource repository) {
+                     @NonNull RecipeDataSource repository,
+                     @NonNull SimpleIdlingResource idlingResource) {
         recipesView = view;
         recipesView.setPresenter(this);
         this.repository = repository;
+        this.idlingResource = idlingResource;
         compositeDisposable = new CompositeDisposable();
     }
 
@@ -62,6 +68,10 @@ public class RecipesPresenter implements RecipesContract.Presenter {
         Disposable disposable = repository.getRecipes()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe(subscription -> {
+                    recipesView.showLoadingIndicator(true);
+                    idlingResource.setIdleState(false);
+                })
                 .subscribe(recipes -> {
                     Timber.i(recipes.toString());
                     if (recipes.isEmpty()) {
@@ -72,8 +82,11 @@ public class RecipesPresenter implements RecipesContract.Presenter {
                 }, throwable -> {
                     Timber.e(throwable);
                     recipesView.showLoadingRecipeError();
+                    recipesView.showLoadingIndicator(false);
+                    idlingResource.setIdleState(true);
                 }, () -> {
                     recipesView.showLoadingIndicator(false);
+                    idlingResource.setIdleState(true);
                 });
         compositeDisposable.add(disposable);
     }

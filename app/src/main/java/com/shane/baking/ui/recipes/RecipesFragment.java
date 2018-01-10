@@ -116,5 +116,7 @@ public class RecipesFragment extends BaseFragment implements RecipesContract.Vie
     @Override
     public void showLoadingIndicator(boolean shouldShow) {
         swipeRefreshLayout.setRefreshing(shouldShow);
+
+
     }
 }

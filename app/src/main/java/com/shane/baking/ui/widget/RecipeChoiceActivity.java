@@ -4,6 +4,10 @@ import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.annotation.VisibleForTesting;
+import android.support.test.espresso.IdlingResource;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -21,6 +25,7 @@ import com.shane.baking.data.source.remote.RecipeRemoteDataSource;
 import com.shane.baking.network.RecipeApi;
 import com.shane.baking.ui.base.BaseActivity;
 import com.shane.baking.ui.recipedetail.RecipeDetailActivity;
+import com.shane.baking.utils.SimpleIdlingResource;
 
 import butterknife.BindView;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -41,11 +46,24 @@ public class RecipeChoiceActivity extends BaseActivity implements RecipeAdapter.
 
     RecipeAdapter recipeAdapter;
 
+    @Nullable
+    private SimpleIdlingResource idlingResource;
+
+    @NonNull
+    @VisibleForTesting
+    public IdlingResource getIdlingResource() {
+        if (idlingResource == null) {
+            idlingResource = new SimpleIdlingResource();
+        }
+        return idlingResource;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recipe_choice);
         setSupportActionBar(toolbar);
+        getIdlingResource();
 
         recipeAdapter = new RecipeAdapter(this, this, true);
         recipeRecyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -61,7 +79,24 @@ public class RecipeChoiceActivity extends BaseActivity implements RecipeAdapter.
 
         Disposable disposable = repository.getRecipes()
                 .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-                .subscribe(recipes -> recipeAdapter.setRecipes(recipes), Timber::e);
+                .doOnSubscribe(subscription -> {
+                    if (idlingResource != null) {
+                        idlingResource.setIdleState(true);
+                    }
+                })
+                .subscribe(
+                        recipes -> recipeAdapter.setRecipes(recipes),
+                        error -> {
+                            Timber.e(error);
+                            if (idlingResource != null) {
+                                idlingResource.setIdleState(false);
+                            }
+                        },
+                        () -> {
+                            if (idlingResource != null) {
+                                idlingResource.setIdleState(true);
+                            }
+                        });
 
         compositeDisposable.add(disposable);
     }
