@@ -1,6 +1,7 @@
 package com.shane.baking.ui.steps;
 
 import android.app.Dialog;
+import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -149,10 +150,35 @@ public class StepFragment extends BaseFragment implements StepContract.View, Exo
         exoPlayerView.setVisibility(View.GONE);
     }
 
+    private void startVideoInFullscreen() {
+        if (getContext() == null) return;
+        fullscreenDialog = new Dialog(getContext(), android.R.style.Theme_Black_NoTitleBar_Fullscreen) {
+            @Override
+            public void onBackPressed() {
+                super.onBackPressed();
+                closeFullscreenVideo();
+            }
+        };
+        ((ViewGroup) exoPlayerView.getParent()).removeView(exoPlayerView);
+        fullscreenDialog.addContentView(exoPlayerView,
+                new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.MATCH_PARENT));
+        fullscreenDialog.show();
+    }
+
+    private void closeFullscreenVideo() {
+        if (getContext() == null) return;
+        ((StepActivity) getContext()).finish();
+    }
+
     @Override
     public void setupVideoPlayer(@NonNull String url) {
         initializeMediaSession();
         initializeVideoPlayer(url);
+
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            startVideoInFullscreen();
+        }
     }
 
     @Override

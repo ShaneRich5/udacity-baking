@@ -81,7 +81,7 @@ public class RecipeChoiceActivity extends BaseActivity implements RecipeAdapter.
                 .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe(subscription -> {
                     if (idlingResource != null) {
-                        idlingResource.setIdleState(true);
+                        idlingResource.setIdleState(false);
                     }
                 })
                 .subscribe(
@@ -89,7 +89,7 @@ public class RecipeChoiceActivity extends BaseActivity implements RecipeAdapter.
                         error -> {
                             Timber.e(error);
                             if (idlingResource != null) {
-                                idlingResource.setIdleState(false);
+                                idlingResource.setIdleState(true);
                             }
                         },
                         () -> {

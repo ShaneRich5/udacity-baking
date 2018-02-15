@@ -64,6 +64,10 @@ public class RecipesFragment extends BaseFragment implements RecipesContract.Vie
             throw new ClassCastException("Activity must implement RecipeAdapter.OnClickHandler");
         }
 
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            presenter.loadRecipes(true);
+        });
+
         recipeAdapter = new RecipeAdapter((RecipeAdapter.OnClickHandler) getActivity(), getActivity());
         recipeRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), NUM_OF_GRID_COLUMNS));
         recipeRecyclerView.addItemDecoration(new GridSpaceItemDecoration(PIXEL_GRID_SPACING));
@@ -116,7 +120,5 @@ public class RecipesFragment extends BaseFragment implements RecipesContract.Vie
     @Override
     public void showLoadingIndicator(boolean shouldShow) {
         swipeRefreshLayout.setRefreshing(shouldShow);
-
-
     }
 }
