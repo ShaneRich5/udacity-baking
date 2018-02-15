@@ -122,6 +122,7 @@ public class StepFragment extends BaseFragment implements StepContract.View, Exo
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
+        if (exoPlayer != null) seekPosition = exoPlayer.getCurrentPosition();
         outState.putLong(STATE_SEEK_POSITION, seekPosition);
         outState.putParcelable(EXTRA_STEP, cachedStep);
     }
@@ -183,10 +184,15 @@ public class StepFragment extends BaseFragment implements StepContract.View, Exo
 
     @Override
     public void releaseVideoPlayer() {
-        if (exoPlayer == null) return;
-        exoPlayer.stop();
-        exoPlayer.release();
-        exoPlayer = null;
+        if (exoPlayer != null) {
+            exoPlayer.stop();
+            exoPlayer.release();
+            exoPlayer = null;
+        }
+
+        if (mediaSession != null) {
+            mediaSession.setActive(false);
+        }
     }
 
     private void initializeVideoPlayer(String url) {
@@ -270,6 +276,7 @@ public class StepFragment extends BaseFragment implements StepContract.View, Exo
         @Override
         public void onPause() {
             super.onPause();
+            seekPosition = exoPlayer.getCurrentPosition();
             exoPlayer.setPlayWhenReady(false);
         }
 
