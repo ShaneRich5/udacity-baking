@@ -114,9 +114,15 @@ public class StepFragment extends BaseFragment implements StepContract.View, Exo
     }
 
     @Override
+    public void onPause() {
+        super.onPause();
+        if (exoPlayer != null) seekPosition = exoPlayer.getCurrentPosition();
+        releaseVideoPlayer();
+    }
+
+    @Override
     public void onDestroyView() {
         super.onDestroyView();
-        releaseVideoPlayer();
     }
 
     @Override
